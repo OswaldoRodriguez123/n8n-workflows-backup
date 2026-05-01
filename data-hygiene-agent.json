@@ -1,0 +1,770 @@
+{
+  "updatedAt": "2026-05-01T13:54:54.630Z",
+  "createdAt": "2026-04-06T18:53:42.170Z",
+  "id": "TdQwsWIUuE9a6QrB",
+  "name": "🧹 Data Hygiene Agent",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        16,
+        0
+      ],
+      "id": "9d3bc74d-6c27-455d-bbec-f0af04d23670",
+      "name": "When chat message received",
+      "webhookId": "hygiene-chat-webhook-001"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "chatInput"
+            },
+            {
+              "name": "environment"
+            },
+            {
+              "name": "sessionId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        -176
+      ],
+      "id": "ea8bbb58-586d-46da-a743-00325e4d1c73",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.chatInput }}",
+        "guardrails": {
+          "jailbreak": {
+            "value": {
+              "threshold": 0.7
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        256,
+        -80
+      ],
+      "id": "17354eaf-8934-4a31-b1bb-5b907dd0b565",
+      "name": "Check Jailbreak"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Operation not permitted!"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        368,
+        112
+      ],
+      "id": "fc7ed44d-b063-40f3-970e-f2225916122f",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.guardrailsInput }}",
+        "options": {
+          "systemMessage": "=You are a Data Hygiene Agent. Your job is to scan a JIRA ticket for sensitive data and clean it up.\n\nStep 1 — Extract the ticket key from the user's message.\nStep 2 — Call the JIRA API Agent Tool with: \"Check if issue <ticket-key> description contains any PII or secret keys. If it does, update the description using the Update Issue Description tool with the sanitized version, then add a comment: Data Hygiene: Sensitive data was automatically removed from this ticket. If you need to share credentials or PII, please use a secure secrets manager instead. If no sensitive data is found, just report it is clean.\"\n\nReport back what happened.\n\nThe current date and time is {{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        576,
+        -80
+      ],
+      "id": "bcba5893-3439-4a7e-9698-ff623f21e551",
+      "name": "Data Hygiene Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.4-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5.4-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        512,
+        176
+      ],
+      "id": "7a0a0d2c-0a86-4858-b717-ebbe70bebc7a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.4-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5.4-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        224
+      ],
+      "id": "a042952a-f092-487d-8e02-31f01dd88fbc",
+      "name": "OpenAI Chat Model (Jailbreak)",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to interface with the JIRA API Agent. Use it to check issue descriptions for sensitive data, update descriptions, and add comments. Pass a plain English 'query' describing what you want.",
+        "workflowId": {
+          "__rl": true,
+          "value": "1RUhHM7A23cDS51X",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/1RUhHM7A23cDS51X",
+          "cachedResultName": "🤖 JIRA API Agent Prod"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}",
+            "environment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('environment', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "environment",
+              "displayName": "environment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        64
+      ],
+      "id": "43152bf2-d825-4ceb-95e1-14d4c36672e0",
+      "name": "JIRA API Agent Tool"
+    },
+    {
+      "parameters": {
+        "events": [
+          "update"
+        ]
+      },
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        352,
+        320
+      ],
+      "id": "0654be21-845f-493b-a1d8-8b5c094a4a2f",
+      "name": "n8n Trigger"
+    },
+    {
+      "parameters": {
+        "events": [
+          "activate"
+        ]
+      },
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        352,
+        464
+      ],
+      "id": "66bc31e5-0f96-4883-97b8-07a74b94799a",
+      "name": "n8n Trigger1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "riyJ7tz257HtEbmi",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/riyJ7tz257HtEbmi",
+          "cachedResultName": "N8N Backup Trigger Node"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "workflow": "={{ $workflow.id }}"
+          },
+          "matchingColumns": [
+            "workflow"
+          ],
+          "schema": [
+            {
+              "id": "workflow",
+              "displayName": "workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        352
+      ],
+      "id": "63d3b5bf-bea5-449b-9be9-7ac75eb9bf62",
+      "name": "Call 'N8N Backup Trigger Node'"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Jailbreak": {
+      "main": [
+        [
+          {
+            "node": "Data Hygiene Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Data Hygiene Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model (Jailbreak)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JIRA API Agent Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Data Hygiene Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Call 'N8N Backup Trigger Node'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Trigger": {
+      "main": [
+        [
+          {
+            "node": "Call 'N8N Backup Trigger Node'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b9646428-2ab3-4ccb-bcb1-b3c82eed1cf4",
+  "activeVersionId": "b9646428-2ab3-4ccb-bcb1-b3c82eed1cf4",
+  "triggerCount": 3,
+  "shared": [
+    {
+      "updatedAt": "2026-04-06T18:53:42.178Z",
+      "createdAt": "2026-04-06T18:53:42.178Z",
+      "role": "workflow:owner",
+      "workflowId": "TdQwsWIUuE9a6QrB",
+      "projectId": "OIndEVhNfITieKkR"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-01T01:05:00.000Z",
+    "createdAt": "2026-05-01T01:04:57.499Z",
+    "versionId": "b9646428-2ab3-4ccb-bcb1-b3c82eed1cf4",
+    "workflowId": "TdQwsWIUuE9a6QrB",
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          16,
+          0
+        ],
+        "id": "9d3bc74d-6c27-455d-bbec-f0af04d23670",
+        "name": "When chat message received",
+        "webhookId": "hygiene-chat-webhook-001"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "chatInput"
+              },
+              {
+                "name": "environment"
+              },
+              {
+                "name": "sessionId"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          16,
+          -176
+        ],
+        "id": "ea8bbb58-586d-46da-a743-00325e4d1c73",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.chatInput }}",
+          "guardrails": {
+            "jailbreak": {
+              "value": {
+                "threshold": 0.7
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          256,
+          -80
+        ],
+        "id": "17354eaf-8934-4a31-b1bb-5b907dd0b565",
+        "name": "Check Jailbreak"
+      },
+      {
+        "parameters": {
+          "errorMessage": "Operation not permitted!"
+        },
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [
+          368,
+          112
+        ],
+        "id": "fc7ed44d-b063-40f3-970e-f2225916122f",
+        "name": "Stop and Error"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.guardrailsInput }}",
+          "options": {
+            "systemMessage": "=You are a Data Hygiene Agent. Your job is to scan a JIRA ticket for sensitive data and clean it up.\n\nStep 1 — Extract the ticket key from the user's message.\nStep 2 — Call the JIRA API Agent Tool with: \"Check if issue <ticket-key> description contains any PII or secret keys. If it does, update the description using the Update Issue Description tool with the sanitized version, then add a comment: Data Hygiene: Sensitive data was automatically removed from this ticket. If you need to share credentials or PII, please use a secure secrets manager instead. If no sensitive data is found, just report it is clean.\"\n\nReport back what happened.\n\nThe current date and time is {{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          576,
+          -80
+        ],
+        "id": "bcba5893-3439-4a7e-9698-ff623f21e551",
+        "name": "Data Hygiene Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-5.4-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-5.4-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          512,
+          176
+        ],
+        "id": "7a0a0d2c-0a86-4858-b717-ebbe70bebc7a",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-5.4-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-5.4-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          176,
+          224
+        ],
+        "id": "a042952a-f092-487d-8e02-31f01dd88fbc",
+        "name": "OpenAI Chat Model (Jailbreak)",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "description": "Call this tool to interface with the JIRA API Agent. Use it to check issue descriptions for sensitive data, update descriptions, and add comments. Pass a plain English 'query' describing what you want.",
+          "workflowId": {
+            "__rl": true,
+            "value": "1RUhHM7A23cDS51X",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/1RUhHM7A23cDS51X",
+            "cachedResultName": "🤖 JIRA API Agent Prod"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}",
+              "environment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('environment', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "query",
+                "displayName": "query",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "environment",
+                "displayName": "environment",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          896,
+          64
+        ],
+        "id": "43152bf2-d825-4ceb-95e1-14d4c36672e0",
+        "name": "JIRA API Agent Tool"
+      },
+      {
+        "parameters": {
+          "events": [
+            "update"
+          ]
+        },
+        "type": "n8n-nodes-base.n8nTrigger",
+        "typeVersion": 1,
+        "position": [
+          352,
+          320
+        ],
+        "id": "0654be21-845f-493b-a1d8-8b5c094a4a2f",
+        "name": "n8n Trigger"
+      },
+      {
+        "parameters": {
+          "events": [
+            "activate"
+          ]
+        },
+        "type": "n8n-nodes-base.n8nTrigger",
+        "typeVersion": 1,
+        "position": [
+          352,
+          464
+        ],
+        "id": "66bc31e5-0f96-4883-97b8-07a74b94799a",
+        "name": "n8n Trigger1"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "riyJ7tz257HtEbmi",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/riyJ7tz257HtEbmi",
+            "cachedResultName": "N8N Backup Trigger Node"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "workflow": "={{ $workflow.id }}"
+            },
+            "matchingColumns": [
+              "workflow"
+            ],
+            "schema": [
+              {
+                "id": "workflow",
+                "displayName": "workflow",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          576,
+          352
+        ],
+        "id": "63d3b5bf-bea5-449b-9be9-7ac75eb9bf62",
+        "name": "Call 'N8N Backup Trigger Node'"
+      }
+    ],
+    "connections": {
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check Jailbreak": {
+        "main": [
+          [
+            {
+              "node": "Data Hygiene Agent",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stop and Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Data Hygiene Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model (Jailbreak)": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "JIRA API Agent Tool": {
+        "ai_tool": [
+          [
+            {
+              "node": "Data Hygiene Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "n8n Trigger1": {
+        "main": [
+          [
+            {
+              "node": "Call 'N8N Backup Trigger Node'",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "n8n Trigger": {
+        "main": [
+          [
+            {
+              "node": "Call 'N8N Backup Trigger Node'",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Oswaldo Rodriguez",
+    "name": "Version b9646428",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
