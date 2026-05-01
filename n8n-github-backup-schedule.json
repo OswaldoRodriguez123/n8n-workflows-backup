@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-01T14:21:59.147Z",
+  "updatedAt": "2026-05-01T14:24:25.030Z",
   "createdAt": "2026-04-30T19:31:09.695Z",
   "id": "D8VPIkfYeVIwDQB5",
   "name": "N8N Github Backup Schedule",
@@ -16,7 +16,7 @@
       "type": "n8n-nodes-base.code",
       "position": [
         672,
-        704
+        688
       ],
       "typeVersion": 2
     },
@@ -43,7 +43,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         0,
-        704
+        688
       ],
       "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
       "typeVersion": 1,
@@ -71,7 +71,7 @@
       "type": "n8n-nodes-base.aggregate",
       "position": [
         224,
-        704
+        688
       ],
       "typeVersion": 1
     },
@@ -87,7 +87,7 @@
       "type": "n8n-nodes-base.n8n",
       "position": [
         448,
-        704
+        688
       ],
       "typeVersion": 1,
       "credentials": {
@@ -114,7 +114,7 @@
       "type": "n8n-nodes-base.if",
       "position": [
         1120,
-        704
+        688
       ],
       "typeVersion": 1
     },
@@ -142,7 +142,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         1344,
-        800
+        784
       ],
       "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
       "typeVersion": 1,
@@ -178,7 +178,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         1344,
-        608
+        592
       ],
       "typeVersion": 1,
       "webhookId": "a824606d-bf7f-41f8-85cf-48af8081a988",
@@ -206,7 +206,7 @@
       "type": "n8n-nodes-base.if",
       "position": [
         1792,
-        608
+        592
       ],
       "typeVersion": 1
     },
@@ -235,7 +235,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         2016,
-        608
+        592
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
       "typeVersion": 1,
@@ -260,7 +260,7 @@
       "typeVersion": 1.3,
       "position": [
         -224,
-        704
+        688
       ],
       "id": "144b2fb2-b2c6-480b-97c7-0be8be16f1bb",
       "name": "Schedule Trigger"
@@ -290,7 +290,7 @@
       "type": "n8n-nodes-base.set",
       "position": [
         896,
-        704
+        688
       ],
       "typeVersion": 3.4
     },
@@ -303,7 +303,7 @@
       "typeVersion": 2,
       "position": [
         1568,
-        608
+        592
       ],
       "id": "fefe70b3-9223-40eb-865e-24f55964ec55",
       "name": "Retrieve VersionIds"
@@ -441,7 +441,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d02e5973-afb9-437a-8053-aaae247e11c6",
+  "versionId": "eb5b3788-0315-43f7-b1ee-38ca524e22ec",
   "activeVersionId": "d02e5973-afb9-437a-8053-aaae247e11c6",
   "triggerCount": 1,
   "shared": [
