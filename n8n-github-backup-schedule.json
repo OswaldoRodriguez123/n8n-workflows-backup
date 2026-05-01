@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-01T14:20:55.136Z",
+  "updatedAt": "2026-05-01T14:21:59.147Z",
   "createdAt": "2026-04-30T19:31:09.695Z",
   "id": "D8VPIkfYeVIwDQB5",
   "name": "N8N Github Backup Schedule",
@@ -248,20 +248,6 @@
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve workflows').item.json.versionId,\n  ...$json\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1568,
-        608
-      ],
-      "id": "fefe70b3-9223-40eb-865e-24f55964ec55",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
         "rule": {
           "interval": [
             {
@@ -307,6 +293,20 @@
         704
       ],
       "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve workflows').item.json.versionId,\n  ...$json\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        608
+      ],
+      "id": "fefe70b3-9223-40eb-865e-24f55964ec55",
+      "name": "Retrieve VersionIds"
     }
   ],
   "connections": {
@@ -376,7 +376,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Retrieve VersionIds",
             "type": "main",
             "index": 0
           }
@@ -388,17 +388,6 @@
         [
           {
             "node": "Update file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Has changed?",
             "type": "main",
             "index": 0
           }
@@ -426,6 +415,17 @@
           }
         ]
       ]
+    },
+    "Retrieve VersionIds": {
+      "main": [
+        [
+          {
+            "node": "Has changed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -441,8 +441,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "38c1f602-95db-43c1-9c73-69a7f083eaff",
-  "activeVersionId": "7a32e3e3-ea91-4f56-9c10-c67dc529c7f6",
+  "versionId": "d02e5973-afb9-437a-8053-aaae247e11c6",
+  "activeVersionId": "d02e5973-afb9-437a-8053-aaae247e11c6",
   "triggerCount": 1,
   "shared": [
     {
@@ -454,9 +454,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-01T14:20:23.000Z",
-    "createdAt": "2026-05-01T14:20:19.669Z",
-    "versionId": "7a32e3e3-ea91-4f56-9c10-c67dc529c7f6",
+    "updatedAt": "2026-05-01T14:22:00.000Z",
+    "createdAt": "2026-05-01T14:21:59.148Z",
+    "versionId": "d02e5973-afb9-437a-8053-aaae247e11c6",
     "workflowId": "D8VPIkfYeVIwDQB5",
     "nodes": [
       {
@@ -588,7 +588,7 @@
           },
           "filePath": "={{ $node['Commit info'].json.fileName }}",
           "fileContent": "={{ $('Convert to base64').item.json.data }}",
-          "commitMessage": "=backup-{{ $node['Commit info'].json.commitDate }}"
+          "commitMessage": "={{ $('Commit info').item.json.commitMessage }}"
         },
         "id": "9dfab3d0-4563-45a2-97e9-8b5ffb8ddc11",
         "name": "Upload file",
@@ -701,20 +701,6 @@
       },
       {
         "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve workflows').item.json.versionId,\n  ...$json\n};"
-        },
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          1568,
-          608
-        ],
-        "id": "fefe70b3-9223-40eb-865e-24f55964ec55",
-        "name": "Code in JavaScript"
-      },
-      {
-        "parameters": {
           "rule": {
             "interval": [
               {
@@ -760,6 +746,20 @@
           704
         ],
         "typeVersion": 3.4
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve workflows').item.json.versionId,\n  ...$json\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1568,
+          608
+        ],
+        "id": "fefe70b3-9223-40eb-865e-24f55964ec55",
+        "name": "Retrieve VersionIds"
       }
     ],
     "connections": {
@@ -829,7 +829,7 @@
         "main": [
           [
             {
-              "node": "Code in JavaScript",
+              "node": "Retrieve VersionIds",
               "type": "main",
               "index": 0
             }
@@ -841,17 +841,6 @@
           [
             {
               "node": "Update file",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Code in JavaScript": {
-        "main": [
-          [
-            {
-              "node": "Has changed?",
               "type": "main",
               "index": 0
             }
@@ -879,10 +868,21 @@
             }
           ]
         ]
+      },
+      "Retrieve VersionIds": {
+        "main": [
+          [
+            {
+              "node": "Has changed?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Oswaldo Rodriguez",
-    "name": "Version 7a32e3e3",
+    "name": "Version d02e5973",
     "description": "",
     "autosaved": true
   },
