@@ -1,0 +1,890 @@
+{
+  "updatedAt": "2026-05-01T14:20:55.136Z",
+  "createdAt": "2026-04-30T19:31:09.695Z",
+  "id": "D8VPIkfYeVIwDQB5",
+  "name": "N8N Github Backup Schedule",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const workflow = $input.item.json;\nconst jsonString = JSON.stringify(workflow, null, 2);\nconst base64 = Buffer.from(jsonString).toString('base64');\n\nreturn {\n  ...workflow,\n  data: base64\n};"
+      },
+      "id": "0d6e5ed7-4a77-4802-a8cf-c5227a0f3e31",
+      "name": "Convert to base64",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        672,
+        704
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "oswaldorodriguez123",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "list",
+          "cachedResultName": "n8n-workflows-backup",
+          "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+        },
+        "filePath": "="
+      },
+      "id": "bdbdb0b0-460c-47fc-8e9e-861adccabe58",
+      "name": "List files from repo",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        0,
+        704
+      ],
+      "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "XROMFPzqFUz4J0e9",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "41fa43c3-f4b1-4905-8423-612dc4dafb97",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        224,
+        704
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "filters": {
+          "activeWorkflows": true
+        },
+        "requestOptions": {}
+      },
+      "id": "194a936a-4244-4f0c-92bb-a2357a691c05",
+      "name": "Retrieve workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        448,
+        704
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "aC9X6ZkK0JdCzFeK",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Aggregate').item.json.name }}",
+              "operation": "contains",
+              "value2": "={{ $node['Commit info'].json.fileName }}"
+            }
+          ]
+        }
+      },
+      "id": "168c7b29-b803-4af0-a4b4-957c7b0e6868",
+      "name": "Check if file exists",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1120,
+        704
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "oswaldorodriguez123",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "list",
+          "cachedResultName": "n8n-workflows-backup",
+          "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+        },
+        "filePath": "={{ $node['Commit info'].json.fileName }}",
+        "fileContent": "={{ $('Convert to base64').item.json.data }}",
+        "commitMessage": "={{ $('Commit info').item.json.commitMessage }}"
+      },
+      "id": "9dfab3d0-4563-45a2-97e9-8b5ffb8ddc11",
+      "name": "Upload file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1344,
+        800
+      ],
+      "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "XROMFPzqFUz4J0e9",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "oswaldorodriguez123",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "list",
+          "cachedResultName": "n8n-workflows-backup",
+          "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+        },
+        "filePath": "={{ $node['Commit info'].json.fileName }}",
+        "asBinaryProperty": false,
+        "additionalParameters": {}
+      },
+      "id": "41f6e398-ef98-4237-8b84-6ad9106fd91e",
+      "name": "Get current file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1344,
+        608
+      ],
+      "typeVersion": 1,
+      "webhookId": "a824606d-bf7f-41f8-85cf-48af8081a988",
+      "credentials": {
+        "githubApi": {
+          "id": "XROMFPzqFUz4J0e9",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.storedVersionId }}",
+              "operation": "notEqual",
+              "value2": "={{ $json.currentVersionId }}"
+            }
+          ]
+        }
+      },
+      "id": "ce77c824-078a-41ac-8a2a-e1aba8349d13",
+      "name": "Has changed?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1792,
+        608
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "oswaldorodriguez123",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "list",
+          "cachedResultName": "n8n-workflows-backup",
+          "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+        },
+        "filePath": "={{ $('Commit info').item.json.fileName }}",
+        "fileContent": "={{ $('Convert to base64').item.json.data }}",
+        "commitMessage": "={{ $('Commit info').item.json.commitMessage }}"
+      },
+      "id": "92f98a1f-2467-4cb8-85fa-bb2db39ab11e",
+      "name": "Update file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        2016,
+        608
+      ],
+      "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "XROMFPzqFUz4J0e9",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve workflows').item.json.versionId,\n  ...$json\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        608
+      ],
+      "id": "fefe70b3-9223-40eb-865e-24f55964ec55",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        704
+      ],
+      "id": "144b2fb2-b2c6-480b-97c7-0be8be16f1bb",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b0fe1bcc-e79c-4a6b-b8b4-44222c8bf4e8",
+              "name": "fileName",
+              "type": "string",
+              "value": "={{ $('Retrieve workflows').item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() }}.json"
+            },
+            {
+              "id": "9157636d-d77a-4af7-84ce-420d673b73b9",
+              "name": "commitMessage",
+              "value": "={{ $('Retrieve workflows').item.json.activeVersion?.name ?? 'no-version' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c05d9385-9b79-46d4-a6ea-037a185c4bc5",
+      "name": "Commit info",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        896,
+        704
+      ],
+      "typeVersion": 3.4
+    }
+  ],
+  "connections": {
+    "Convert to base64": {
+      "main": [
+        [
+          {
+            "node": "Commit info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List files from repo": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Retrieve workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve workflows": {
+      "main": [
+        [
+          {
+            "node": "Convert to base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if file exists": {
+      "main": [
+        [
+          {
+            "node": "Get current file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current file": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has changed?": {
+      "main": [
+        [
+          {
+            "node": "Update file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Has changed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "List files from repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit info": {
+      "main": [
+        [
+          {
+            "node": "Check if file exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "38c1f602-95db-43c1-9c73-69a7f083eaff",
+  "activeVersionId": "7a32e3e3-ea91-4f56-9c10-c67dc529c7f6",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-30T19:31:09.698Z",
+      "createdAt": "2026-04-30T19:31:09.698Z",
+      "role": "workflow:owner",
+      "workflowId": "D8VPIkfYeVIwDQB5",
+      "projectId": "OIndEVhNfITieKkR"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-01T14:20:23.000Z",
+    "createdAt": "2026-05-01T14:20:19.669Z",
+    "versionId": "7a32e3e3-ea91-4f56-9c10-c67dc529c7f6",
+    "workflowId": "D8VPIkfYeVIwDQB5",
+    "nodes": [
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const workflow = $input.item.json;\nconst jsonString = JSON.stringify(workflow, null, 2);\nconst base64 = Buffer.from(jsonString).toString('base64');\n\nreturn {\n  ...workflow,\n  data: base64\n};"
+        },
+        "id": "0d6e5ed7-4a77-4802-a8cf-c5227a0f3e31",
+        "name": "Convert to base64",
+        "type": "n8n-nodes-base.code",
+        "position": [
+          672,
+          704
+        ],
+        "typeVersion": 2
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "oswaldorodriguez123",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-workflows-backup",
+            "mode": "list",
+            "cachedResultName": "n8n-workflows-backup",
+            "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+          },
+          "filePath": "="
+        },
+        "id": "bdbdb0b0-460c-47fc-8e9e-861adccabe58",
+        "name": "List files from repo",
+        "type": "n8n-nodes-base.github",
+        "position": [
+          0,
+          704
+        ],
+        "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
+        "typeVersion": 1,
+        "alwaysOutputData": true,
+        "credentials": {
+          "githubApi": {
+            "id": "XROMFPzqFUz4J0e9",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "41fa43c3-f4b1-4905-8423-612dc4dafb97",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "position": [
+          224,
+          704
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "filters": {
+            "activeWorkflows": true
+          },
+          "requestOptions": {}
+        },
+        "id": "194a936a-4244-4f0c-92bb-a2357a691c05",
+        "name": "Retrieve workflows",
+        "type": "n8n-nodes-base.n8n",
+        "position": [
+          448,
+          704
+        ],
+        "typeVersion": 1,
+        "credentials": {
+          "n8nApi": {
+            "id": "aC9X6ZkK0JdCzFeK",
+            "name": "n8n account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $('Aggregate').item.json.name }}",
+                "operation": "contains",
+                "value2": "={{ $node['Commit info'].json.fileName }}"
+              }
+            ]
+          }
+        },
+        "id": "168c7b29-b803-4af0-a4b4-957c7b0e6868",
+        "name": "Check if file exists",
+        "type": "n8n-nodes-base.if",
+        "position": [
+          1120,
+          704
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "oswaldorodriguez123",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-workflows-backup",
+            "mode": "list",
+            "cachedResultName": "n8n-workflows-backup",
+            "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+          },
+          "filePath": "={{ $node['Commit info'].json.fileName }}",
+          "fileContent": "={{ $('Convert to base64').item.json.data }}",
+          "commitMessage": "=backup-{{ $node['Commit info'].json.commitDate }}"
+        },
+        "id": "9dfab3d0-4563-45a2-97e9-8b5ffb8ddc11",
+        "name": "Upload file",
+        "type": "n8n-nodes-base.github",
+        "position": [
+          1344,
+          800
+        ],
+        "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
+        "typeVersion": 1,
+        "credentials": {
+          "githubApi": {
+            "id": "XROMFPzqFUz4J0e9",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "oswaldorodriguez123",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-workflows-backup",
+            "mode": "list",
+            "cachedResultName": "n8n-workflows-backup",
+            "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+          },
+          "filePath": "={{ $node['Commit info'].json.fileName }}",
+          "asBinaryProperty": false,
+          "additionalParameters": {}
+        },
+        "id": "41f6e398-ef98-4237-8b84-6ad9106fd91e",
+        "name": "Get current file",
+        "type": "n8n-nodes-base.github",
+        "position": [
+          1344,
+          608
+        ],
+        "typeVersion": 1,
+        "webhookId": "a824606d-bf7f-41f8-85cf-48af8081a988",
+        "credentials": {
+          "githubApi": {
+            "id": "XROMFPzqFUz4J0e9",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.storedVersionId }}",
+                "operation": "notEqual",
+                "value2": "={{ $json.currentVersionId }}"
+              }
+            ]
+          }
+        },
+        "id": "ce77c824-078a-41ac-8a2a-e1aba8349d13",
+        "name": "Has changed?",
+        "type": "n8n-nodes-base.if",
+        "position": [
+          1792,
+          608
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "oswaldorodriguez123",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-workflows-backup",
+            "mode": "list",
+            "cachedResultName": "n8n-workflows-backup",
+            "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
+          },
+          "filePath": "={{ $('Commit info').item.json.fileName }}",
+          "fileContent": "={{ $('Convert to base64').item.json.data }}",
+          "commitMessage": "={{ $('Commit info').item.json.commitMessage }}"
+        },
+        "id": "92f98a1f-2467-4cb8-85fa-bb2db39ab11e",
+        "name": "Update file",
+        "type": "n8n-nodes-base.github",
+        "position": [
+          2016,
+          608
+        ],
+        "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
+        "typeVersion": 1,
+        "credentials": {
+          "githubApi": {
+            "id": "XROMFPzqFUz4J0e9",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve workflows').item.json.versionId,\n  ...$json\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1568,
+          608
+        ],
+        "id": "fefe70b3-9223-40eb-865e-24f55964ec55",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "daysInterval": 7
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -224,
+          704
+        ],
+        "id": "144b2fb2-b2c6-480b-97c7-0be8be16f1bb",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b0fe1bcc-e79c-4a6b-b8b4-44222c8bf4e8",
+                "name": "fileName",
+                "type": "string",
+                "value": "={{ $('Retrieve workflows').item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() }}.json"
+              },
+              {
+                "id": "9157636d-d77a-4af7-84ce-420d673b73b9",
+                "name": "commitMessage",
+                "value": "={{ $('Retrieve workflows').item.json.activeVersion?.name ?? 'no-version' }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c05d9385-9b79-46d4-a6ea-037a185c4bc5",
+        "name": "Commit info",
+        "type": "n8n-nodes-base.set",
+        "position": [
+          896,
+          704
+        ],
+        "typeVersion": 3.4
+      }
+    ],
+    "connections": {
+      "Convert to base64": {
+        "main": [
+          [
+            {
+              "node": "Commit info",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List files from repo": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Retrieve workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Retrieve workflows": {
+        "main": [
+          [
+            {
+              "node": "Convert to base64",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check if file exists": {
+        "main": [
+          [
+            {
+              "node": "Get current file",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Upload file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get current file": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Has changed?": {
+        "main": [
+          [
+            {
+              "node": "Update file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Has changed?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "List files from repo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Commit info": {
+        "main": [
+          [
+            {
+              "node": "Check if file exists",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Oswaldo Rodriguez",
+    "name": "Version 7a32e3e3",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
