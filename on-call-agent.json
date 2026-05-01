@@ -1,0 +1,951 @@
+{
+  "updatedAt": "2026-05-01T13:53:51.075Z",
+  "createdAt": "2026-04-06T19:10:51.771Z",
+  "id": "5I9Hx9C4Z8mqX9Sf",
+  "name": "🚨 On Call Agent",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "oncall/report-bug",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        176
+      ],
+      "id": "16def909-d007-43a1-80f9-f084ede8148f",
+      "name": "Webhook Trigger",
+      "webhookId": "oncall-webhook-001",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5NQeVxbcetQtrecj",
+          "name": "Webhook Secret"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"query\": \"Jobs failed to scrape on 2026-04-06\",\n  \"source\": \"jobs-ai\",\n  \"environment\": \"production\",\n  \"project_key\": \"ABOX\",\n  \"description\": \"The checkScrapedJobs cron detected 0 jobs in the last 7 days.\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1184,
+        416
+      ],
+      "id": "7aece901-0b90-4f6e-90d9-cd5fc323ea45",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "merge-01",
+              "name": "query",
+              "value": "={{ $json.body?.query ?? $json.query }}",
+              "type": "string"
+            },
+            {
+              "id": "merge-02",
+              "name": "source",
+              "value": "={{ $json.body?.source ?? $json.source }}",
+              "type": "string"
+            },
+            {
+              "id": "merge-03",
+              "name": "environment",
+              "value": "={{ $json.body?.environment ?? $json.environment }}",
+              "type": "string"
+            },
+            {
+              "id": "merge-04",
+              "name": "project_key",
+              "value": "={{ $json.body?.project_key ?? $json.project_key }}",
+              "type": "string"
+            },
+            {
+              "id": "merge-05",
+              "name": "description",
+              "value": "={{ $json.body?.description ?? $json.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1456,
+        240
+      ],
+      "id": "ebd2f2e7-a566-48b5-b424-13df4c6aed0b",
+      "name": "Normalize Input"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst combined = Object.entries({\n  query: j.query || '',\n  source: j.source || '',\n  environment: j.environment || '',\n  project_key: j.project_key || '',\n  description: j.description || ''\n}).map(([k, v]) => `${k}: ${v}`).join('\\n');\nreturn [{ json: { ...j, combined } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        240
+      ],
+      "id": "f2b6e429-09fc-441a-ab08-bbd7e3a8a1b8",
+      "name": "Combine Fields"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.combined }}",
+        "guardrails": {
+          "jailbreak": {
+            "value": {
+              "threshold": 0.7
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        1904,
+        240
+      ],
+      "id": "082edc2e-1268-4c61-a6c7-965c0a3395b0",
+      "name": "Check Jailbreak"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Operation not permitted!"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        496
+      ],
+      "id": "58be6886-4fcb-40f0-93dd-f26b0075e101",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.guardrailsInput }}",
+        "guardrails": {
+          "pii": {
+            "value": {
+              "type": "all"
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        2208,
+        192
+      ],
+      "id": "4c7f5e2d-2f52-41fb-b1ee-85721cac3c84",
+      "name": "Validate Input"
+    },
+    {
+      "parameters": {
+        "operation": "sanitize",
+        "text": "={{ $json.guardrailsInput }}",
+        "guardrails": {
+          "pii": {
+            "value": {
+              "type": "all"
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        480
+      ],
+      "id": "a52c3fb4-e4dd-4a82-8ca5-ab7304090d49",
+      "name": "Sanitize Input"
+    },
+    {
+      "parameters": {
+        "jsCode": "const sanitized = $input.first().json.guardrailsInput;\nconst fields = {};\nsanitized.split('\\n').forEach(line => {\n  const [key, ...rest] = line.split(': ');\n  if (key) fields[key.trim()] = rest.join(': ').trim();\n});\nreturn [{ json: fields }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2416,
+        256
+      ],
+      "id": "48ecd330-91a1-45a2-90d3-77c56227df1d",
+      "name": "Parse Sanitized"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Parse Sanitized').item.json.query }}",
+        "options": {
+          "systemMessage": "=You are an On Call Supervisor Agent. Your job is to create JIRA Bug tickets in the {{ $('Parse Sanitized').item.json.project_key }}\"project when operational problems are reported.\nWhen creating a bug ticket follow these steps in order:\n\nAsk the JIRA API Agent: \"Get the numeric project ID and the numeric issue type ID for Bug in project {{ $('Parse Sanitized').item.json.project_key }}\"\nUse both returned numeric IDs to create the issue — never pass the project key string, always use the numeric IDs\n\nSummary: {{ $('Parse Sanitized').item.json.query }}\"\nDescription: {{ $('Parse Sanitized').item.json.description }}\nLabels: on-call and automated if the report came from automation\n\n\n\nAlways delegate JIRA reads/writes to the JIRA API Agent. Never guess issue keys.\nThe current date and time is {{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}\nSource: {{ $('Parse Sanitized').item.json.source }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2576,
+        240
+      ],
+      "id": "ac6321bb-edf9-43b8-a85f-f8382ceaa30c",
+      "name": "On Call Supervisor Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.4-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5.4-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2496,
+        480
+      ],
+      "id": "9b836995-7d35-42e0-84ca-143c8d010fc6",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.4-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5.4-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1792,
+        416
+      ],
+      "id": "b7cdfc5d-cb97-4ac2-b891-7895ceb81d5f",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to interface with the JIRA API Agent. Use it to list issues, get issue details, create issues, add comments, and update issues. Pass a plain English 'query' describing exactly what you want done.",
+        "workflowId": {
+          "__rl": true,
+          "value": "7Ih2KCWqwTEQOg9J",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/7Ih2KCWqwTEQOg9J",
+          "cachedResultName": "🤖 JIRA API Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ $fromAI('query', '', 'string') }}",
+            "environment": "={{ $fromAI('environment', '', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "environment",
+              "displayName": "environment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        2704,
+        480
+      ],
+      "id": "21ea7d3d-2819-4878-b311-66d3ddd63288",
+      "name": "JIRA API Agent Tool"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2864,
+        224
+      ],
+      "id": "e40506de-cf9b-4897-826a-ee24a7700af5",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "Combine Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Fields": {
+      "main": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Jailbreak": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Parse Sanitized",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sanitize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanitize Input": {
+      "main": [
+        [
+          {
+            "node": "Parse Sanitized",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Sanitized": {
+      "main": [
+        [
+          {
+            "node": "On Call Supervisor Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "On Call Supervisor Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JIRA API Agent Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "On Call Supervisor Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On Call Supervisor Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "query": "Jobs failed to scrape on 2026-04-06",
+          "source": "jobs-ai",
+          "environment": "production",
+          "project_key": "ABOX",
+          "description": "The checkScrapedJobs cron detected 0 jobs in the last 7 days. The scraping pipeline may have failed or stopped running."
+        }
+      }
+    ]
+  },
+  "versionId": "98aeb000-8d70-4d80-b077-94a79be707f8",
+  "activeVersionId": "9df349cb-5981-4c96-9feb-7680eaf522be",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-06T19:10:51.774Z",
+      "createdAt": "2026-04-06T19:10:51.774Z",
+      "role": "workflow:owner",
+      "workflowId": "5I9Hx9C4Z8mqX9Sf",
+      "projectId": "OIndEVhNfITieKkR"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-04-06T19:19:04.000Z",
+    "createdAt": "2026-04-06T19:18:38.348Z",
+    "versionId": "9df349cb-5981-4c96-9feb-7680eaf522be",
+    "workflowId": "5I9Hx9C4Z8mqX9Sf",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "oncall/report-bug",
+          "authentication": "headerAuth",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -16,
+          0
+        ],
+        "id": "a37c9336-a71c-4900-b262-f4ecb78702dd",
+        "name": "Webhook Trigger",
+        "webhookId": "oncall-webhook-001",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "5NQeVxbcetQtrecj",
+            "name": "Webhook Secret"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "inputSource": "jsonExample",
+          "jsonExample": "{\n  \"query\": \"Jobs failed to scrape on 2026-04-06\",\n  \"source\": \"jobs-ai\",\n  \"environment\": \"production\"\n}"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -16,
+          224
+        ],
+        "id": "bf53045c-dd43-4b50-930a-a6d68130fbc2",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "merge-01",
+                "name": "query",
+                "value": "={{ $json.body?.query ?? $json.query }}",
+                "type": "string"
+              },
+              {
+                "id": "merge-02",
+                "name": "source",
+                "value": "={{ $json.body?.source ?? $json.source }}",
+                "type": "string"
+              },
+              {
+                "id": "merge-03",
+                "name": "environment",
+                "value": "={{ $json.body?.environment ?? $json.environment }}",
+                "type": "string"
+              },
+              {
+                "id": "merge-04",
+                "name": "project_key",
+                "value": "ABOX",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          256,
+          48
+        ],
+        "id": "b7ddc9a4-b6e7-4213-9c18-c864acd50155",
+        "name": "Normalize Input"
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.query }}",
+          "guardrails": {
+            "jailbreak": {
+              "value": {
+                "threshold": 0.7
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          416,
+          16
+        ],
+        "id": "2403080c-372f-4f3e-9c16-7825a1c80a1e",
+        "name": "Check Jailbreak"
+      },
+      {
+        "parameters": {
+          "errorMessage": "Operation not permitted!"
+        },
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [
+          560,
+          240
+        ],
+        "id": "05555228-33a8-4c05-9357-2681587cb24f",
+        "name": "Stop and Error"
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.guardrailsInput }}",
+          "guardrails": {
+            "pii": {
+              "value": {
+                "type": "all"
+              }
+            },
+            "secretKeys": {
+              "value": {
+                "permissiveness": "balanced"
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          736,
+          32
+        ],
+        "id": "18cd8a2d-2de3-43d2-9cd1-1f3aacefaec4",
+        "name": "Validate Input"
+      },
+      {
+        "parameters": {
+          "operation": "sanitize",
+          "text": "={{ $json.guardrailsInput }}",
+          "guardrails": {
+            "pii": {
+              "value": {
+                "type": "all"
+              }
+            },
+            "secretKeys": {
+              "value": {
+                "permissiveness": "balanced"
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          736,
+          240
+        ],
+        "id": "fa312cc9-6089-47a8-9f37-e0374384c7b5",
+        "name": "Sanitize Input"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.guardrailsInput }}",
+          "options": {
+            "systemMessage": "=You are an On Call Supervisor Agent. Your job is to triage operational problems and create JIRA bug tickets in the {{ $('Normalize Input').item.json.project_key }} project when issues are detected.\nYou are invoked via webhook — someone in the org reports a problem. You must create a JIRA Bug ticket capturing the problem with a clear summary and description.\nScope restriction — you can ONLY create Bug type tickets. For any other request respond with: \"I can only create bug tickets.\"\nWhen creating a bug ticket follow these steps in order:\n\nAsk the JIRA API Agent: \"Get the numeric project ID and the numeric issue type ID for Bug in project {{ $('Normalize Input').item.json.project_key }}\"\nUse both returned numeric IDs to create the issue — never pass the project key string, always use the numeric IDs\n\nSummary: concise and actionable\nDescription: what failed, when detected, who reported it, any context given\nLabels: on-call and automated if the report came from automation\n\n\n\nAlways delegate JIRA reads/writes to the JIRA API Agent. Never guess issue keys.\nThe current date and time is {{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}\nSource: {{ $('Normalize Input').item.json.source }}"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          944,
+          16
+        ],
+        "id": "c7a042f6-50d9-402d-892d-d929cbc6fc00",
+        "name": "On Call Supervisor Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-5-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-5-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          880,
+          288
+        ],
+        "id": "afbec91f-cc9e-4e6d-afbb-accb7f037b80",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "description": "Call this tool to interface with the JIRA API Agent. Use it to list issues, get issue details, create issues, add comments, and update issues. Pass a plain English 'query' describing exactly what you want done.",
+          "workflowId": {
+            "__rl": true,
+            "value": "7Ih2KCWqwTEQOg9J",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/7Ih2KCWqwTEQOg9J",
+            "cachedResultName": "🤖 JIRA API Agent"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}",
+              "environment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('environment', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "query",
+                "displayName": "query",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "environment",
+                "displayName": "environment",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          1040,
+          272
+        ],
+        "id": "bcb7716d-c070-4962-aa88-99b03fd331f6",
+        "name": "JIRA API Agent Tool"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          1216,
+          48
+        ],
+        "id": "ebb155ef-e440-4dd8-bb36-22d35247d1ac",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-5-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          368,
+          208
+        ],
+        "id": "6875b82a-fce9-424e-8d2e-616d28c089dc",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook Trigger": {
+        "main": [
+          [
+            {
+              "node": "Normalize Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Normalize Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Input": {
+        "main": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check Jailbreak": {
+        "main": [
+          [
+            {
+              "node": "Validate Input",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stop and Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Input": {
+        "main": [
+          [
+            {
+              "node": "On Call Supervisor Agent",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sanitize Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sanitize Input": {
+        "main": [
+          [
+            {
+              "node": "On Call Supervisor Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "On Call Supervisor Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "JIRA API Agent Tool": {
+        "ai_tool": [
+          [
+            {
+              "node": "On Call Supervisor Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "On Call Supervisor Agent": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Oswaldo Rodriguez",
+    "name": "Version 9df349cb",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
