@@ -1,0 +1,2431 @@
+{
+  "updatedAt": "2026-05-01T13:54:27.812Z",
+  "createdAt": "2026-04-07T17:34:15.113Z",
+  "id": "1RUhHM7A23cDS51X",
+  "name": "🤖 JIRA API Agent",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query"
+            },
+            {
+              "name": "environment"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1360,
+        848
+      ],
+      "id": "139fd981-c59a-46d8-9d2b-b6f5c6e7e0fc",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.guardrailsInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a JIRA API Agent. It is your job to manage JIRA issues and comments.\n\nThe tools you have available allow you to search for issues, update them, add or update comments, and retrieve information about them.\n\nWhen writing JQL, remember that `AND` takes precedence over `OR`, so you must group related `OR` statements in parenthesis, e.g.: `project = ABOX AND (statusCategory = \"To Do\" OR statusCategory = \"In Progress\")`\n\nYour response should be terse. If asked for information about one or more issues, only respond with that information. If asked to take action on one or more issues, only reply with exactly what you did.\n\nFor Issue types updates, always fetch the supported ones first and use that id for the update.\n\nThe current date and time is `{{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}`"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -368,
+        384
+      ],
+      "id": "98427b1e-e752-4979-8d0c-32597ce1de26",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -976,
+        752
+      ],
+      "id": "e6d520a5-eccc-4598-9e3a-1d24a5ee3c4d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Limit', ``, 'number') }}",
+        "options": {
+          "jql": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JQL', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        992
+      ],
+      "id": "c35a2328-cbfe-469b-9f5c-63567bccca5e",
+      "name": "List Issues",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Development",
+        "height": 224,
+        "width": 256,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1424,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "8db0a7ee-8282-4c63-94e0-e55b293590f0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Testing",
+        "height": 240,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1424,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "f91e6a70-569d-4ba5-a0e4-05edf79e1522",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Production",
+        "height": 224,
+        "width": 256,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1424,
+        800
+      ],
+      "typeVersion": 1,
+      "id": "cc7deed1-617b-42ae-9fb3-7273c0a2866f",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Development",
+        "height": 224,
+        "width": 256,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "096234d6-1677-4c3a-bb4b-b4da1bc6ff5b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Testing",
+        "height": 240,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        432
+      ],
+      "typeVersion": 1,
+      "id": "c921986e-9ca4-4523-b7fb-cfa6ee7f7163",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Production",
+        "height": 224,
+        "width": 256,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        720
+      ],
+      "typeVersion": 1,
+      "id": "db81ffe9-0548-402b-954c-36267a46f669",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "simplifyOutput": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Simplify', ``, 'boolean') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        992
+      ],
+      "id": "1e451e3c-775e-4ced-b194-72dcf73bacd2",
+      "name": "Get Issue",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "updateFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "issueType": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Type', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        992
+      ],
+      "id": "02bcb411-9d2d-4b83-ae74-9b8bf2d905b9",
+      "name": "Update Issue",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "transitions",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        992
+      ],
+      "id": "9649b2c1-424c-4218-8d4f-7bc09676f8b0",
+      "name": "Get Issue Status",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "issueComment",
+        "operation": "get",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "commentId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Comment_ID', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        1168
+      ],
+      "id": "a15268f0-1fcf-4b98-978a-93d55a14cc71",
+      "name": "Get Comment",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "issueComment",
+        "operation": "getAll",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        1168
+      ],
+      "id": "34b6ce14-ad40-4252-8f23-5be67f7b411f",
+      "name": "List Comments",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "issueComment",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "jsonParameters": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JSON_Parameters', ``, 'boolean') }}",
+        "comment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Comment', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        992
+      ],
+      "id": "0f1c9455-6d93-49e6-863a-1a58719fe7f8",
+      "name": "Add Comment",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "issueComment",
+        "operation": "update",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "commentId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Comment_ID', ``, 'string') }}",
+        "jsonParameters": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JSON_Parameters', ``, 'boolean') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        1168
+      ],
+      "id": "58cea2a3-5c10-4b25-baba-9ea8e88dba43",
+      "name": "Update Comment",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1632,
+        304
+      ],
+      "id": "b5b02335-26b9-486b-a9a8-59544570ab27",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3300065b-b2c4-46a7-93f3-f22eff5cf3b6",
+              "name": "response",
+              "value": "={{ $json.guardrailsInput || $('AI Agent').item.json.output.response }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        240
+      ],
+      "id": "6fdc388b-2eb3-4f54-9e2b-09adb360f5f3",
+      "name": "Output"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "823405d8-e448-4af4-9773-d0878805b4b1",
+              "name": "query",
+              "value": "=Update issue ABOX-4 to task",
+              "type": "string"
+            },
+            {
+              "id": "87940fa4-972f-493c-ac05-e02d4ceb6e7c",
+              "name": "environment",
+              "value": "development",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1344,
+        304
+      ],
+      "id": "b5b12f68-9c6c-4a4d-a145-405435c148d4",
+      "name": "Input"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+          "mode": "list",
+          "cachedResultName": "JIRA Agent Tests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A:B"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4c33028e-9f80-44c3-8390-c5cff320dfb9",
+      "name": "Get row(s) in sheet",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"response\": \"Here is the list of issues:\",\n\t\"environment\": \"testing\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        640
+      ],
+      "id": "5df2ed45-3755-4dd8-b0ae-4af9bdb70a7a",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Project', `Must be a numeric project ID only, e.g. 21292. Never pass a project key like ABOX.`, 'string') }}",
+          "mode": "id"
+        },
+        "issueType": {
+          "__rl": true,
+          "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Type', `Must be a numeric issue type ID only, e.g. 11911. Never pass a name like Bug.`, 'string') }}",
+          "mode": "id"
+        },
+        "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        992
+      ],
+      "id": "fdf78b43-f4ab-4c73-8579-ce3fe49e40c5",
+      "name": "Create Issue",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        816
+      ],
+      "id": "2a62cb58-020a-4022-8ad8-3c68387827cd",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "List the project issue types.",
+        "url": "=https://zumba-team-ah870f6q.atlassian.net/rest/api/3/project/{{ $fromAI(\"projectKey\", \"Jira project key\", \"string\") }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -688,
+        1168
+      ],
+      "id": "2867fb09-3551-49d8-a970-2c1058e75689",
+      "name": "List project Issue types",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Operation not permitted!"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        512
+      ],
+      "id": "3755d9af-9562-4709-a9d4-3fbd1ef2fac4",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.query || $json.chatInput }}",
+        "guardrails": {
+          "jailbreak": {
+            "value": {
+              "threshold": 0.7
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        352
+      ],
+      "id": "c18b755a-399d-4d17-ae50-b6c5e9a0137f",
+      "name": "Check Jailbreak"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.output.response }}",
+        "guardrails": {
+          "pii": {
+            "value": {
+              "type": "all"
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        288
+      ],
+      "id": "13c3a26f-474d-4929-933e-bef94e4e96b6",
+      "name": "Validate Output"
+    },
+    {
+      "parameters": {
+        "operation": "sanitize",
+        "text": "={{ $json.guardrailsInput }}",
+        "guardrails": {
+          "pii": {
+            "value": {
+              "type": "all"
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        112,
+        448
+      ],
+      "id": "da3b50cc-c717-45d0-9068-b0bd01f2f120",
+      "name": "Sanitize Output"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.guardrailsInput }}",
+        "guardrails": {
+          "pii": {
+            "value": {
+              "type": "all"
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        -752,
+        256
+      ],
+      "id": "6a8d9fd1-5d43-46c3-bcf1-dbba7bf2adb2",
+      "name": "Validate Input"
+    },
+    {
+      "parameters": {
+        "operation": "sanitize",
+        "text": "={{ $json.guardrailsInput }}",
+        "guardrails": {
+          "pii": {
+            "value": {
+              "type": "all"
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        464
+      ],
+      "id": "c128309c-892c-48a2-b4bb-b97036bf3ec3",
+      "name": "Sanitize Input"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+          "mode": "list",
+          "cachedResultName": "JIRA Agent Tests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "AI Output": "={{ $json.guardrailsInput || $('Output').item.json.response }}",
+            "query": "={{ $('Check Jailbreak').item.json.guardrailsInput }}",
+            "environment": "testing"
+          },
+          "matchingColumns": [
+            "query"
+          ],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "environment",
+              "displayName": "environment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AI Output",
+              "displayName": "AI Output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Validation",
+              "displayName": "Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        0
+      ],
+      "id": "41eaffd8-a5c9-43f3-9e4a-c28b35fd0cd4",
+      "name": "Update row in sheet",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use this tool to update a JIRA issue description. Pass issueKey as the issue key (e.g. ABOX-3) and description as the full redacted plain text. The tool handles ADF formatting. This tool returns an empty response or a 204 status on success. If the response contains no errorMessages or errorMessages is empty, consider it a success and do not retry.",
+        "method": "PUT",
+        "url": "=https://zumba-team-ah870f6q.atlassian.net/rest/api/3/issue/{{ $fromAI(\"issueKey\", \"The JIRA issue key e.g. ABOX-2\", \"string\") }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"fields\": {\n    \"description\": {\n      \"version\": 1,\n      \"type\": \"doc\",\n      \"content\": [\n        {\n          \"type\": \"paragraph\",\n          \"content\": [\n            {\n              \"type\": \"text\",\n              \"text\": {{ JSON.stringify($fromAI('description', 'Plain text', 'string')) }}\n            }\n          ]\n        }\n      ]\n    }\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -224,
+        1168
+      ],
+      "id": "2ec285b1-79a0-4fbb-a8e1-be609057658d",
+      "name": "Update Issue Description",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "source": "googleSheets",
+        "documentId": {
+          "__rl": true,
+          "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+          "mode": "list",
+          "cachedResultName": "JIRA Agent Tests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+        }
+      },
+      "type": "n8n-nodes-base.evaluationTrigger",
+      "typeVersion": 4.7,
+      "position": [
+        -1360,
+        592
+      ],
+      "id": "2c8850d1-2ddc-46c5-9249-0959e20305c7",
+      "name": "When fetching a dataset row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UTt2eVTdJ234mBtA",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "source": "googleSheets",
+        "documentId": {
+          "__rl": true,
+          "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+          "mode": "list",
+          "cachedResultName": "JIRA Agent Tests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+        },
+        "outputs": {
+          "values": [
+            {
+              "outputName": "AI Output",
+              "outputValue": "={{ $json.guardrailsInput }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        560,
+        512
+      ],
+      "id": "ac6a2519-dd97-42fa-9df3-cbf09a3578eb",
+      "name": "Evaluation",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UTt2eVTdJ234mBtA",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Validate Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Check Jailbreak",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Issues": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Issue": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Issue": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Issue Status": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Comment": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Comments": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Comment": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Comment": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Issue": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List project Issue types": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Jailbreak": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Output": {
+      "main": [
+        [
+          {
+            "node": "Output",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sanitize Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanitize Output": {
+      "main": [
+        [
+          {
+            "node": "Output",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sanitize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanitize Input": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Issue Description": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "When fetching a dataset row": {
+      "main": [
+        [
+          {
+            "node": "Check Jailbreak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "query": "update ticket type ABOX-4 to bug"
+        }
+      }
+    ],
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "query": "Get all open issues in the Agent Platform Sandbox project (ABOX)."
+        }
+      }
+    ]
+  },
+  "versionId": "3f67607a-392d-49b5-ab3c-59a667ffd1dd",
+  "activeVersionId": "3f67607a-392d-49b5-ab3c-59a667ffd1dd",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-07T17:34:15.120Z",
+      "createdAt": "2026-04-07T17:34:15.120Z",
+      "role": "workflow:owner",
+      "workflowId": "1RUhHM7A23cDS51X",
+      "projectId": "OIndEVhNfITieKkR"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-04-07T18:54:07.000Z",
+    "createdAt": "2026-04-07T18:54:06.801Z",
+    "versionId": "3f67607a-392d-49b5-ab3c-59a667ffd1dd",
+    "workflowId": "1RUhHM7A23cDS51X",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "query"
+              },
+              {
+                "name": "environment"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1360,
+          848
+        ],
+        "id": "139fd981-c59a-46d8-9d2b-b6f5c6e7e0fc",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.guardrailsInput }}",
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "=You are a JIRA API Agent. It is your job to manage JIRA issues and comments.\n\nThe tools you have available allow you to search for issues, update them, add or update comments, and retrieve information about them.\n\nWhen writing JQL, remember that `AND` takes precedence over `OR`, so you must group related `OR` statements in parenthesis, e.g.: `project = ABOX AND (statusCategory = \"To Do\" OR statusCategory = \"In Progress\")`\n\nYour response should be terse. If asked for information about one or more issues, only respond with that information. If asked to take action on one or more issues, only reply with exactly what you did.\n\nFor Issue types updates, always fetch the supported ones first and use that id for the update.\n\nThe current date and time is `{{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}`"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          -368,
+          384
+        ],
+        "id": "98427b1e-e752-4979-8d0c-32597ce1de26",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4.1-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          -976,
+          752
+        ],
+        "id": "e6d520a5-eccc-4598-9e3a-1d24a5ee3c4d",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "limit": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Limit', ``, 'number') }}",
+          "options": {
+            "jql": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JQL', ``, 'string') }}"
+          }
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -976,
+          992
+        ],
+        "id": "c35a2328-cbfe-469b-9f5c-63567bccca5e",
+        "name": "List Issues",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Development",
+          "height": 224,
+          "width": 256,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1424,
+          240
+        ],
+        "typeVersion": 1,
+        "id": "8db0a7ee-8282-4c63-94e0-e55b293590f0",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "content": "## Testing",
+          "height": 240,
+          "width": 256,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1424,
+          512
+        ],
+        "typeVersion": 1,
+        "id": "f91e6a70-569d-4ba5-a0e4-05edf79e1522",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "content": "## Production",
+          "height": 224,
+          "width": 256,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1424,
+          800
+        ],
+        "typeVersion": 1,
+        "id": "cc7deed1-617b-42ae-9fb3-7273c0a2866f",
+        "name": "Sticky Note3"
+      },
+      {
+        "parameters": {
+          "content": "## Development",
+          "height": 224,
+          "width": 256,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          480,
+          176
+        ],
+        "typeVersion": 1,
+        "id": "096234d6-1677-4c3a-bb4b-b4da1bc6ff5b",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "content": "## Testing",
+          "height": 240,
+          "width": 256,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          480,
+          432
+        ],
+        "typeVersion": 1,
+        "id": "c921986e-9ca4-4523-b7fb-cfa6ee7f7163",
+        "name": "Sticky Note4"
+      },
+      {
+        "parameters": {
+          "content": "## Production",
+          "height": 224,
+          "width": 256,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          480,
+          720
+        ],
+        "typeVersion": 1,
+        "id": "db81ffe9-0548-402b-954c-36267a46f669",
+        "name": "Sticky Note5"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+          "simplifyOutput": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Simplify', ``, 'boolean') }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -832,
+          992
+        ],
+        "id": "1e451e3c-775e-4ced-b194-72dcf73bacd2",
+        "name": "Get Issue",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+          "updateFields": {
+            "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+            "issueType": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Type', ``, 'string') }}"
+          }
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -224,
+          992
+        ],
+        "id": "02bcb411-9d2d-4b83-ae74-9b8bf2d905b9",
+        "name": "Update Issue",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "transitions",
+          "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -688,
+          992
+        ],
+        "id": "9649b2c1-424c-4218-8d4f-7bc09676f8b0",
+        "name": "Get Issue Status",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "issueComment",
+          "operation": "get",
+          "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+          "commentId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Comment_ID', ``, 'string') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -832,
+          1168
+        ],
+        "id": "a15268f0-1fcf-4b98-978a-93d55a14cc71",
+        "name": "Get Comment",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "issueComment",
+          "operation": "getAll",
+          "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -976,
+          1168
+        ],
+        "id": "34b6ce14-ad40-4252-8f23-5be67f7b411f",
+        "name": "List Comments",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "issueComment",
+          "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+          "jsonParameters": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JSON_Parameters', ``, 'boolean') }}",
+          "comment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Comment', ``, 'string') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -80,
+          992
+        ],
+        "id": "0f1c9455-6d93-49e6-863a-1a58719fe7f8",
+        "name": "Add Comment",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "issueComment",
+          "operation": "update",
+          "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+          "commentId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Comment_ID', ``, 'string') }}",
+          "jsonParameters": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JSON_Parameters', ``, 'boolean') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -368,
+          1168
+        ],
+        "id": "58cea2a3-5c10-4b25-baba-9ea8e88dba43",
+        "name": "Update Comment",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1632,
+          304
+        ],
+        "id": "b5b02335-26b9-486b-a9a8-59544570ab27",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3300065b-b2c4-46a7-93f3-f22eff5cf3b6",
+                "name": "response",
+                "value": "={{ $json.guardrailsInput || $('AI Agent').item.json.output.response }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          560,
+          240
+        ],
+        "id": "6fdc388b-2eb3-4f54-9e2b-09adb360f5f3",
+        "name": "Output"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "823405d8-e448-4af4-9773-d0878805b4b1",
+                "name": "query",
+                "value": "=Update issue ABOX-4 to task",
+                "type": "string"
+              },
+              {
+                "id": "87940fa4-972f-493c-ac05-e02d4ceb6e7c",
+                "name": "environment",
+                "value": "development",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1344,
+          304
+        ],
+        "id": "b5b12f68-9c6c-4a4d-a145-405435c148d4",
+        "name": "Input"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+            "mode": "list",
+            "cachedResultName": "JIRA Agent Tests",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+          },
+          "options": {
+            "dataLocationOnSheet": {
+              "values": {
+                "rangeDefinition": "specifyRangeA1",
+                "range": "A:B"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          0,
+          0
+        ],
+        "id": "4c33028e-9f80-44c3-8390-c5cff320dfb9",
+        "name": "Get row(s) in sheet",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"response\": \"Here is the list of issues:\",\n\t\"environment\": \"testing\"\n}",
+          "autoFix": true
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          32,
+          640
+        ],
+        "id": "5df2ed45-3755-4dd8-b0ae-4af9bdb70a7a",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "project": {
+            "__rl": true,
+            "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Project', `Must be a numeric project ID only, e.g. 21292. Never pass a project key like ABOX.`, 'string') }}",
+            "mode": "id"
+          },
+          "issueType": {
+            "__rl": true,
+            "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Type', `Must be a numeric issue type ID only, e.g. 11911. Never pass a name like Bug.`, 'string') }}",
+            "mode": "id"
+          },
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}",
+          "additionalFields": {
+            "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}"
+          }
+        },
+        "type": "n8n-nodes-base.jiraTool",
+        "typeVersion": 1,
+        "position": [
+          -368,
+          992
+        ],
+        "id": "fdf78b43-f4ab-4c73-8579-ce3fe49e40c5",
+        "name": "Create Issue",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-5-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          32,
+          816
+        ],
+        "id": "2a62cb58-020a-4022-8ad8-3c68387827cd",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "List the project issue types.",
+          "url": "=https://zumba-team-ah870f6q.atlassian.net/rest/api/3/project/{{ $fromAI(\"projectKey\", \"Jira project key\", \"string\") }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "jiraSoftwareCloudApi",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.4,
+        "position": [
+          -688,
+          1168
+        ],
+        "id": "2867fb09-3551-49d8-a970-2c1058e75689",
+        "name": "List project Issue types",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "errorMessage": "Operation not permitted!"
+        },
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [
+          -816,
+          512
+        ],
+        "id": "3755d9af-9562-4709-a9d4-3fbd1ef2fac4",
+        "name": "Stop and Error"
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.query || $json.chatInput }}",
+          "guardrails": {
+            "jailbreak": {
+              "value": {
+                "threshold": 0.7
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          -1072,
+          352
+        ],
+        "id": "c18b755a-399d-4d17-ae50-b6c5e9a0137f",
+        "name": "Check Jailbreak"
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.output.response }}",
+          "guardrails": {
+            "pii": {
+              "value": {
+                "type": "all"
+              }
+            },
+            "secretKeys": {
+              "value": {
+                "permissiveness": "balanced"
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          -32,
+          288
+        ],
+        "id": "13c3a26f-474d-4929-933e-bef94e4e96b6",
+        "name": "Validate Output"
+      },
+      {
+        "parameters": {
+          "operation": "sanitize",
+          "text": "={{ $json.guardrailsInput }}",
+          "guardrails": {
+            "pii": {
+              "value": {
+                "type": "all"
+              }
+            },
+            "secretKeys": {
+              "value": {
+                "permissiveness": "balanced"
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          112,
+          448
+        ],
+        "id": "da3b50cc-c717-45d0-9068-b0bd01f2f120",
+        "name": "Sanitize Output"
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.guardrailsInput }}",
+          "guardrails": {
+            "pii": {
+              "value": {
+                "type": "all"
+              }
+            },
+            "secretKeys": {
+              "value": {
+                "permissiveness": "balanced"
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          -752,
+          256
+        ],
+        "id": "6a8d9fd1-5d43-46c3-bcf1-dbba7bf2adb2",
+        "name": "Validate Input"
+      },
+      {
+        "parameters": {
+          "operation": "sanitize",
+          "text": "={{ $json.guardrailsInput }}",
+          "guardrails": {
+            "pii": {
+              "value": {
+                "type": "all"
+              }
+            },
+            "secretKeys": {
+              "value": {
+                "permissiveness": "balanced"
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          -624,
+          464
+        ],
+        "id": "c128309c-892c-48a2-b4bb-b97036bf3ec3",
+        "name": "Sanitize Input"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+            "mode": "list",
+            "cachedResultName": "JIRA Agent Tests",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "AI Output": "={{ $json.guardrailsInput || $('Output').item.json.response }}",
+              "query": "={{ $('Check Jailbreak').item.json.guardrailsInput }}",
+              "environment": "testing"
+            },
+            "matchingColumns": [
+              "query"
+            ],
+            "schema": [
+              {
+                "id": "query",
+                "displayName": "query",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "environment",
+                "displayName": "environment",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "AI Output",
+                "displayName": "AI Output",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Validation",
+                "displayName": "Validation",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          240,
+          0
+        ],
+        "id": "41eaffd8-a5c9-43f3-9e4a-c28b35fd0cd4",
+        "name": "Update row in sheet",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "toolDescription": "Use this tool to update a JIRA issue description. Pass issueKey as the issue key (e.g. ABOX-3) and description as the full redacted plain text. The tool handles ADF formatting. This tool returns an empty response or a 204 status on success. If the response contains no errorMessages or errorMessages is empty, consider it a success and do not retry.",
+          "method": "PUT",
+          "url": "=https://zumba-team-ah870f6q.atlassian.net/rest/api/3/issue/{{ $fromAI(\"issueKey\", \"The JIRA issue key e.g. ABOX-2\", \"string\") }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "jiraSoftwareCloudApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": []
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"description\": {\n      \"version\": 1,\n      \"type\": \"doc\",\n      \"content\": [\n        {\n          \"type\": \"paragraph\",\n          \"content\": [\n            {\n              \"type\": \"text\",\n              \"text\": {{ JSON.stringify($fromAI('description', 'Plain text', 'string')) }}\n            }\n          ]\n        }\n      ]\n    }\n  }\n}",
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.4,
+        "position": [
+          -224,
+          1168
+        ],
+        "id": "2ec285b1-79a0-4fbb-a8e1-be609057658d",
+        "name": "Update Issue Description",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "source": "googleSheets",
+          "documentId": {
+            "__rl": true,
+            "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+            "mode": "list",
+            "cachedResultName": "JIRA Agent Tests",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+          }
+        },
+        "type": "n8n-nodes-base.evaluationTrigger",
+        "typeVersion": 4.7,
+        "position": [
+          -1360,
+          592
+        ],
+        "id": "2c8850d1-2ddc-46c5-9249-0959e20305c7",
+        "name": "When fetching a dataset row",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "UTt2eVTdJ234mBtA",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "source": "googleSheets",
+          "documentId": {
+            "__rl": true,
+            "value": "14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec",
+            "mode": "list",
+            "cachedResultName": "JIRA Agent Tests",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14zvb-Nmv1fE6d_kufPniYu1vgOnonmLJg7CyEUn9zec/edit#gid=0"
+          },
+          "outputs": {
+            "values": [
+              {
+                "outputName": "AI Output",
+                "outputValue": "={{ $json.guardrailsInput }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.evaluation",
+        "typeVersion": 4.8,
+        "position": [
+          560,
+          512
+        ],
+        "id": "ac6a2519-dd97-42fa-9df3-cbf09a3578eb",
+        "name": "Evaluation",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "UTt2eVTdJ234mBtA",
+            "name": "Google Sheets account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Validate Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Check Jailbreak",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List Issues": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Issue": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Issue": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Issue Status": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Comment": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List Comments": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add Comment": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Comment": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Input": {
+        "main": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet": {
+        "main": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Issue": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Structured Output Parser",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List project Issue types": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check Jailbreak": {
+        "main": [
+          [
+            {
+              "node": "Validate Input",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stop and Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Output": {
+        "main": [
+          [
+            {
+              "node": "Output",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Update row in sheet",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Evaluation",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sanitize Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sanitize Output": {
+        "main": [
+          [
+            {
+              "node": "Output",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Update row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Input": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sanitize Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sanitize Input": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Issue Description": {
+        "ai_tool": [
+          []
+        ]
+      },
+      "When fetching a dataset row": {
+        "main": [
+          [
+            {
+              "node": "Check Jailbreak",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Oswaldo Rodriguez",
+    "name": "Version 3f67607a",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
