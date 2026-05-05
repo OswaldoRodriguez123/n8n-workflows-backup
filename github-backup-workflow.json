@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-05T13:58:03.723Z",
+  "updatedAt": "2026-05-05T13:58:25.076Z",
   "createdAt": "2026-04-30T19:31:09.695Z",
   "id": "D8VPIkfYeVIwDQB5",
   "name": "GitHub Backup Workflow",
@@ -234,7 +234,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         480,
-        672
+        560
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
       "typeVersion": 1,
@@ -507,8 +507,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "9ebf1f55-e7d0-410d-806c-e3675d7f54c4",
-  "activeVersionId": "3159b3f9-eab2-448c-90cb-92b020bc24b1",
+  "versionId": "656d9332-e84c-4789-8c58-4a412c6803c1",
+  "activeVersionId": "656d9332-e84c-4789-8c58-4a412c6803c1",
   "triggerCount": 1,
   "shared": [
     {
@@ -520,9 +520,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-05T13:55:10.000Z",
-    "createdAt": "2026-05-05T13:52:47.692Z",
-    "versionId": "3159b3f9-eab2-448c-90cb-92b020bc24b1",
+    "updatedAt": "2026-05-05T13:58:27.000Z",
+    "createdAt": "2026-05-05T13:58:25.077Z",
+    "versionId": "656d9332-e84c-4789-8c58-4a412c6803c1",
     "workflowId": "D8VPIkfYeVIwDQB5",
     "nodes": [
       {
@@ -621,7 +621,7 @@
           "conditions": {
             "string": [
               {
-                "value1": "={{ $('Aggregate').item.json.name.includes($node['Commit info'].json.fileName) }}",
+                "value1": "={{ $('Aggregate').item.json.name.includes($node['Commit info'].json.fileName).toString() }}",
                 "value2": "true"
               }
             ]
@@ -753,7 +753,7 @@
         "type": "n8n-nodes-base.github",
         "position": [
           480,
-          672
+          560
         ],
         "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
         "typeVersion": 1,
@@ -1012,7 +1012,7 @@
       }
     },
     "authors": "Oswaldo Rodriguez",
-    "name": "Version 3159b3f9",
+    "name": "Version 656d9332",
     "description": "",
     "autosaved": true
   },
