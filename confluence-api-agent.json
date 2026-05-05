@@ -1,0 +1,746 @@
+{
+  "updatedAt": "2026-05-05T14:18:36.845Z",
+  "createdAt": "2026-05-05T14:17:29.365Z",
+  "id": "ct0GVlQZrxucH4PU",
+  "name": "ℹ️ Confluence API Agent",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query"
+            },
+            {
+              "name": "agentCaller"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -896,
+        144
+      ],
+      "id": "ea627e68-5120-43e3-8fd0-dc71c1a6748c",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.guardrailsInput }}",
+        "options": {
+          "systemMessage": "=You are a Confluence API Agent. It is your job to retrieve, create or update spaces, pages, etc, on Confluence.\n\nThe tools you have available allow you to search for pages or create new pages.\n\nYour response should be terse. If asked for information about one or more pages, only respond with that information. If asked to take action on one or more pages, only reply with exactly what you did.\n\nThe current date and time is `{{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}`"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -192,
+        128
+      ],
+      "id": "13f81377-08cb-4651-ac26-ca0c9cd8fc9e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.query }}",
+        "guardrails": {
+          "jailbreak": {
+            "value": {
+              "threshold": 0.7
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        -688,
+        144
+      ],
+      "id": "e0a27ec4-e587-4a87-8348-26be782b69dc",
+      "name": "Guardrails"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Operation not permitted!"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        320
+      ],
+      "id": "d1fd4f19-9b2d-4f85-bde0-ed26789ec937",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -688,
+        336
+      ],
+      "id": "c87f099b-f4b8-4015-b743-53167092fc66",
+      "name": "OpenAI Chat Model - Jailbreak",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        336
+      ],
+      "id": "ad866348-de2b-4d2b-8422-0309903f80b6",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Makes a request to the Confluence API and returns the descendants of a specific page using the page id. This will return all the descendants like folders, pages, smart link, etc of a specific page",
+        "url": "=https://teamzumba.atlassian.net/wiki/api/v2/pages/{{$fromAI('parentPageId', 'The id of the parent page where you want to get the descendants from')}}/descendants",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "depth",
+              "value": "={{ $fromAI('depth', `Maximum depth of descendants to return. Use 1 as default unless the depth is specified.\n\nMinimum: 1\nMaximum: 10\nFormat: int32`, 'string') || undefined }}"
+            },
+            {
+              "name": "limit",
+              "value": "={{ $fromAI('limit', `Maximum number of items to return. If more results exist, call the endpoint with the cursor to fetch the next set of results. Use 25 as default if limit is not specified.\n\nMinimum: 1\nMaximum: 250\nFormat: int32`, 'string') || undefined }}"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $fromAI('cursor', `Used for pagination, this opaque cursor will be returned in the next URL in the Link response header. Use the relative URL in the Link header to retrieve the next set of results.`, 'string') || undefined }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        },
+        "optimizeResponse": true,
+        "dataField": "results",
+        "fieldsToInclude": "selected",
+        "fields": "id,title,type"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -16,
+        336
+      ],
+      "id": "0dba2c71-6fb7-4ec4-841f-45d706aed735",
+      "name": "Get Descendants of Page",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Makes a request to the Confluence API to create a new page. After creating a page it will return information about it.",
+        "method": "POST",
+        "url": "https://teamzumba.atlassian.net/wiki/api/v2/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "spaceId",
+              "value": "={{ $fromAI('spaceId', `The space id of where to create the page. Value type: string. Required.`, 'string') || undefined }}"
+            },
+            {
+              "name": "status",
+              "value": "current"
+            },
+            {
+              "name": "title",
+              "value": "={{ $fromAI('title', `Title of the new page.`, 'string', 'Untitled Page') }}"
+            },
+            {
+              "name": "parentId",
+              "value": "={{ $fromAI('parentId', `The id of the parent page. The new page will be created as a child of this page.`, 'string') || undefined }}"
+            },
+            {
+              "name": "body",
+              "value": "={{ { representation: \"storage\", value: $fromAI('body_value', 'The body of the new page. This is the content inside the page like text, tables, etc. This should be a string using the Confluence storage format.', 'string', '') } }}"
+            }
+          ]
+        },
+        "options": {},
+        "optimizeResponse": true,
+        "fieldsToInclude": "selected",
+        "fields": "parentId,id,spaceId,title,status"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        144,
+        336
+      ],
+      "id": "fb1ff429-bb39-44c7-b735-3c7f1f1b3af4",
+      "name": "Create Page",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Makes a request to the Confluence API to create a new comment in page.",
+        "method": "POST",
+        "url": "https://teamzumba.atlassian.net/wiki/api/v2/footer-comments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "pageId",
+              "value": "={{ $fromAI('pageId', `The page id of where to create the comment. Value type: string. Required.`, 'string') || undefined }}"
+            },
+            {
+              "name": "body",
+              "value": "={{ { representation: \"storage\", value: $fromAI('body_value', 'The body of the new comment. This is the new comment that will be persisted. This should be a string using the Confluence storage format.') } }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        320,
+        336
+      ],
+      "id": "6f32f5ae-fbc8-4674-9941-fb5eb76f44ae",
+      "name": "Insert comment",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "pSH9UDRLiiGjePjQ",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Guardrails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrails": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model - Jailbreak": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Guardrails",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Descendants of Page": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Page": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert comment": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "query": "Retrieve the data about the page called '2026 Projects' that is inside the Technology space"
+        }
+      }
+    ]
+  },
+  "versionId": "430d5215-b45e-449a-b55e-938e66f6ea5a",
+  "activeVersionId": "430d5215-b45e-449a-b55e-938e66f6ea5a",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-05T14:17:29.371Z",
+      "createdAt": "2026-05-05T14:17:29.371Z",
+      "role": "workflow:owner",
+      "workflowId": "ct0GVlQZrxucH4PU",
+      "projectId": "OIndEVhNfITieKkR"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-05T14:18:39.000Z",
+    "createdAt": "2026-05-05T14:18:36.846Z",
+    "versionId": "430d5215-b45e-449a-b55e-938e66f6ea5a",
+    "workflowId": "ct0GVlQZrxucH4PU",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "query"
+              },
+              {
+                "name": "agentCaller"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -896,
+          144
+        ],
+        "id": "ea627e68-5120-43e3-8fd0-dc71c1a6748c",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.guardrailsInput }}",
+          "options": {
+            "systemMessage": "=You are a Confluence API Agent. It is your job to retrieve, create or update spaces, pages, etc, on Confluence.\n\nThe tools you have available allow you to search for pages or create new pages.\n\nYour response should be terse. If asked for information about one or more pages, only respond with that information. If asked to take action on one or more pages, only reply with exactly what you did.\n\nThe current date and time is `{{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}`"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          -192,
+          128
+        ],
+        "id": "13f81377-08cb-4651-ac26-ca0c9cd8fc9e",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.query }}",
+          "guardrails": {
+            "jailbreak": {
+              "value": {
+                "threshold": 0.7
+              }
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.guardrails",
+        "typeVersion": 2,
+        "position": [
+          -688,
+          144
+        ],
+        "id": "e0a27ec4-e587-4a87-8348-26be782b69dc",
+        "name": "Guardrails"
+      },
+      {
+        "parameters": {
+          "errorMessage": "Operation not permitted!"
+        },
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [
+          -384,
+          320
+        ],
+        "id": "d1fd4f19-9b2d-4f85-bde0-ed26789ec937",
+        "name": "Stop and Error"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-5-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          -688,
+          336
+        ],
+        "id": "c87f099b-f4b8-4015-b743-53167092fc66",
+        "name": "OpenAI Chat Model - Jailbreak",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-5-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          -192,
+          336
+        ],
+        "id": "ad866348-de2b-4d2b-8422-0309903f80b6",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "Makes a request to the Confluence API and returns the descendants of a specific page using the page id. This will return all the descendants like folders, pages, smart link, etc of a specific page",
+          "url": "=https://teamzumba.atlassian.net/wiki/api/v2/pages/{{$fromAI('parentPageId', 'The id of the parent page where you want to get the descendants from')}}/descendants",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "jiraSoftwareCloudApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "depth",
+                "value": "={{ $fromAI('depth', `Maximum depth of descendants to return. Use 1 as default unless the depth is specified.\n\nMinimum: 1\nMaximum: 10\nFormat: int32`, 'string') || undefined }}"
+              },
+              {
+                "name": "limit",
+                "value": "={{ $fromAI('limit', `Maximum number of items to return. If more results exist, call the endpoint with the cursor to fetch the next set of results. Use 25 as default if limit is not specified.\n\nMinimum: 1\nMaximum: 250\nFormat: int32`, 'string') || undefined }}"
+              },
+              {
+                "name": "cursor",
+                "value": "={{ $fromAI('cursor', `Used for pagination, this opaque cursor will be returned in the next URL in the Link response header. Use the relative URL in the Link header to retrieve the next set of results.`, 'string') || undefined }}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true
+              }
+            }
+          },
+          "optimizeResponse": true,
+          "dataField": "results",
+          "fieldsToInclude": "selected",
+          "fields": "id,title,type"
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.4,
+        "position": [
+          -16,
+          336
+        ],
+        "id": "0dba2c71-6fb7-4ec4-841f-45d706aed735",
+        "name": "Get Descendants of Page",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "Makes a request to the Confluence API to create a new page. After creating a page it will return information about it.",
+          "method": "POST",
+          "url": "https://teamzumba.atlassian.net/wiki/api/v2/pages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "jiraSoftwareCloudApi",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "spaceId",
+                "value": "={{ $fromAI('spaceId', `The space id of where to create the page. Value type: string. Required.`, 'string') || undefined }}"
+              },
+              {
+                "name": "status",
+                "value": "current"
+              },
+              {
+                "name": "title",
+                "value": "={{ $fromAI('title', `Title of the new page.`, 'string', 'Untitled Page') }}"
+              },
+              {
+                "name": "parentId",
+                "value": "={{ $fromAI('parentId', `The id of the parent page. The new page will be created as a child of this page.`, 'string') || undefined }}"
+              },
+              {
+                "name": "body",
+                "value": "={{ { representation: \"storage\", value: $fromAI('body_value', 'The body of the new page. This is the content inside the page like text, tables, etc. This should be a string using the Confluence storage format.', 'string', '') } }}"
+              }
+            ]
+          },
+          "options": {},
+          "optimizeResponse": true,
+          "fieldsToInclude": "selected",
+          "fields": "parentId,id,spaceId,title,status"
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.4,
+        "position": [
+          144,
+          336
+        ],
+        "id": "fb1ff429-bb39-44c7-b735-3c7f1f1b3af4",
+        "name": "Create Page",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "Makes a request to the Confluence API to create a new comment in page.",
+          "method": "POST",
+          "url": "https://teamzumba.atlassian.net/wiki/api/v2/footer-comments",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "jiraSoftwareCloudApi",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "pageId",
+                "value": "={{ $fromAI('pageId', `The page id of where to create the comment. Value type: string. Required.`, 'string') || undefined }}"
+              },
+              {
+                "name": "body",
+                "value": "={{ { representation: \"storage\", value: $fromAI('body_value', 'The body of the new comment. This is the new comment that will be persisted. This should be a string using the Confluence storage format.') } }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.4,
+        "position": [
+          320,
+          336
+        ],
+        "id": "6f32f5ae-fbc8-4674-9941-fb5eb76f44ae",
+        "name": "Insert comment",
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "pSH9UDRLiiGjePjQ",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Guardrails",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Guardrails": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stop and Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model - Jailbreak": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Guardrails",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Descendants of Page": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Page": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insert comment": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Oswaldo Rodriguez",
+    "name": "Version 430d5215",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
