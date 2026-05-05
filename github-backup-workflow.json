@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-05T14:17:00.785Z",
+  "updatedAt": "2026-05-05T14:26:06.306Z",
   "createdAt": "2026-04-30T19:31:09.695Z",
   "id": "D8VPIkfYeVIwDQB5",
   "name": "GitHub Backup Workflow",
@@ -146,7 +146,7 @@
           "cachedResultName": "n8n-workflows-backup",
           "cachedResultUrl": "https://github.com/OswaldoRodriguez123/n8n-workflows-backup"
         },
-        "filePath": "={{ $node['Commit info'].json.fileName }}",
+        "filePath": "={{ $json.fileName }}",
         "asBinaryProperty": false,
         "additionalParameters": {}
       },
@@ -538,7 +538,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4b0c934b-5ec1-4660-9a09-20b7d4ddca10",
+  "versionId": "7b8c09f9-403b-4f91-957b-0e4a8f5f2e67",
   "activeVersionId": "4fbd9b0e-671d-4c1d-a00e-0a782fcf738d",
   "triggerCount": 1,
   "shared": [
