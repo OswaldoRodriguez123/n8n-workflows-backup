@@ -1,0 +1,698 @@
+{
+  "updatedAt": "2026-05-01T13:55:40.840Z",
+  "createdAt": "2026-04-01T19:13:24.124Z",
+  "id": "lCcfbWzfBPYYRk7d",
+  "name": "🧠 JIRA Bug Clarity Agent",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        240
+      ],
+      "id": "de08713d-7dd6-411c-af32-c31922452f48",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ylS5iOhRV0YBG0HW",
+          "name": "OpenAi JIRA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to interface with the JIRA API Agent. The input should be \"query\" with an english sentence describing what you want the agent to do. You can get issues by key, list issues, add comments to issues, and update issues.",
+        "workflowId": {
+          "__rl": true,
+          "value": "zFD0dkQyucadEU9s",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/zFD0dkQyucadEU9s",
+          "cachedResultName": "JIRA Agents — 🤖 JIRA API Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}",
+            "environment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('environment', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "environment",
+              "displayName": "environment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1392,
+        240
+      ],
+      "id": "a0db1cce-8cee-47b1-8e96-8f2396e1b03c",
+      "name": "JIRA API Agent"
+    },
+    {
+      "parameters": {
+        "content": "## Development",
+        "height": 224,
+        "width": 256,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "74794ba7-45e5-48c6-82e8-64393957eff2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Testing",
+        "height": 240,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "981a221c-4249-4a82-885e-5907ab889816",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Production",
+        "height": 224,
+        "width": 256,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "7ee9f21f-9c3b-49b2-82e6-ad8c4f73ab1e",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Development",
+        "height": 224,
+        "width": 256,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1952,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "3554077a-2539-483e-bec5-7c6d9cf910f1",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Testing",
+        "height": 240,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1952,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "8a07f07b-b31f-44ca-a565-3b6ea58ac5c9",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Production",
+        "height": 224,
+        "width": 256,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1952,
+        288
+      ],
+      "typeVersion": 1,
+      "id": "ce87ae44-748b-4687-812a-58b56afc9152",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query || $json.chatInput }}",
+        "options": {
+          "systemMessage": "You are a clarity agent who reasons about JIRA Bug issues to determine whether sufficient information is provided.\n\nFirst, get all information about the issue from the JIRA API Agent.\n\nIf the issue is not a bug issue type, take no action and report back that you can only clarify bug issues.\n\nCheck the issue description, any comments, and attachments.\n\nIf there is no description, do one of the following:\n1. If there are comments that look like they describe the issue, use the JIRA API Agent to update the description by formatting and summarizing the comments as a new description for the issue, ending in \"(Description summarized by Zee).\"\n2. If there are attachments, use the JIRA API Agent to leave a friendly comment on the issue asking the issue reporter to add a description of the issue to accompany the attachment(s), including any steps to reproduce the bug.\n3. If there are no relevant comments or attachments, use the JIRA API Agent to leave a friendly comment on the issue asking the issue reporter to provide more information, including any steps to reproduce the bug. Use the summary of the issue for context when crafting this comment.\n\nThe current date and time is `{{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}`\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1232,
+        32
+      ],
+      "id": "b9b541aa-3a78-444b-93cf-645d8d8a8871",
+      "name": "Jira Bug Clarity Agent",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId ?? $json.query ?? 'default-session' }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1248,
+        240
+      ],
+      "id": "ef7e170a-1530-45d0-9a6c-ae372cc40488",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2032,
+        -192
+      ],
+      "id": "9433946e-e05b-48a4-8b93-093edc4d0961",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query"
+            },
+            {
+              "name": "environment"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        336
+      ],
+      "id": "29819ba6-b110-4311-bd93-8f51964890be",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        736,
+        -224
+      ],
+      "id": "9a61b32e-7d38-4630-88f3-152f42d28ab8",
+      "name": "When chat message received",
+      "webhookId": "1a9b8b67-7289-4275-93fa-9547616ec1aa",
+      "alwaysOutputData": false
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Jira Bug Clarity Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JIRA API Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Jira Bug Clarity Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira Bug Clarity Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Jira Bug Clarity Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Jira Bug Clarity Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Jira Bug Clarity Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "query": "Get a list of unassigned issues that are on a current sprint in the 'REQ AI' project."
+        }
+      }
+    ]
+  },
+  "versionId": "8928a6c7-5901-42cb-afb1-9183174460d4",
+  "activeVersionId": "8928a6c7-5901-42cb-afb1-9183174460d4",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-01T19:13:24.127Z",
+      "createdAt": "2026-04-01T19:13:24.127Z",
+      "role": "workflow:owner",
+      "workflowId": "lCcfbWzfBPYYRk7d",
+      "projectId": "OIndEVhNfITieKkR"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-04-02T15:35:20.000Z",
+    "createdAt": "2026-04-02T15:29:55.209Z",
+    "versionId": "8928a6c7-5901-42cb-afb1-9183174460d4",
+    "workflowId": "lCcfbWzfBPYYRk7d",
+    "nodes": [
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-5-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          1104,
+          240
+        ],
+        "id": "de08713d-7dd6-411c-af32-c31922452f48",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "ylS5iOhRV0YBG0HW",
+            "name": "OpenAi JIRA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "description": "Call this tool to interface with the JIRA API Agent. The input should be \"query\" with an english sentence describing what you want the agent to do. You can get issues by key, list issues, add comments to issues, and update issues.",
+          "workflowId": {
+            "__rl": true,
+            "value": "zFD0dkQyucadEU9s",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/zFD0dkQyucadEU9s",
+            "cachedResultName": "JIRA Agents — 🤖 JIRA API Agent"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}",
+              "environment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('environment', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "query",
+                "displayName": "query",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "environment",
+                "displayName": "environment",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          1392,
+          240
+        ],
+        "id": "a0db1cce-8cee-47b1-8e96-8f2396e1b03c",
+        "name": "JIRA API Agent"
+      },
+      {
+        "parameters": {
+          "content": "## Development",
+          "height": 224,
+          "width": 256,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          672,
+          -288
+        ],
+        "typeVersion": 1,
+        "id": "74794ba7-45e5-48c6-82e8-64393957eff2",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "content": "## Testing",
+          "height": 240,
+          "width": 256,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          672,
+          -16
+        ],
+        "typeVersion": 1,
+        "id": "981a221c-4249-4a82-885e-5907ab889816",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "content": "## Production",
+          "height": 224,
+          "width": 256,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          672,
+          272
+        ],
+        "typeVersion": 1,
+        "id": "7ee9f21f-9c3b-49b2-82e6-ad8c4f73ab1e",
+        "name": "Sticky Note3"
+      },
+      {
+        "parameters": {
+          "content": "## Development",
+          "height": 224,
+          "width": 256,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1952,
+          -256
+        ],
+        "typeVersion": 1,
+        "id": "3554077a-2539-483e-bec5-7c6d9cf910f1",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "content": "## Testing",
+          "height": 240,
+          "width": 256,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1952,
+          0
+        ],
+        "typeVersion": 1,
+        "id": "8a07f07b-b31f-44ca-a565-3b6ea58ac5c9",
+        "name": "Sticky Note4"
+      },
+      {
+        "parameters": {
+          "content": "## Production",
+          "height": 224,
+          "width": 256,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1952,
+          288
+        ],
+        "typeVersion": 1,
+        "id": "ce87ae44-748b-4687-812a-58b56afc9152",
+        "name": "Sticky Note5"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.query || $json.chatInput }}",
+          "options": {
+            "systemMessage": "You are a clarity agent who reasons about JIRA Bug issues to determine whether sufficient information is provided.\n\nFirst, get all information about the issue from the JIRA API Agent.\n\nIf the issue is not a bug issue type, take no action and report back that you can only clarify bug issues.\n\nCheck the issue description, any comments, and attachments.\n\nIf there is no description, do one of the following:\n1. If there are comments that look like they describe the issue, use the JIRA API Agent to update the description by formatting and summarizing the comments as a new description for the issue, ending in \"(Description summarized by Zee).\"\n2. If there are attachments, use the JIRA API Agent to leave a friendly comment on the issue asking the issue reporter to add a description of the issue to accompany the attachment(s), including any steps to reproduce the bug.\n3. If there are no relevant comments or attachments, use the JIRA API Agent to leave a friendly comment on the issue asking the issue reporter to provide more information, including any steps to reproduce the bug. Use the summary of the issue for context when crafting this comment.\n\nThe current date and time is `{{ $now.setZone('America/New_York').toFormat('yyyy-MM-dd HH:mm:ss') }}`\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          1232,
+          32
+        ],
+        "id": "b9b541aa-3a78-444b-93cf-645d8d8a8871",
+        "name": "Jira Bug Clarity Agent",
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $json.sessionId ?? $json.query ?? 'default-session' }}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          1248,
+          240
+        ],
+        "id": "ef7e170a-1530-45d0-9a6c-ae372cc40488",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2032,
+          -192
+        ],
+        "id": "9433946e-e05b-48a4-8b93-093edc4d0961",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "query"
+              },
+              {
+                "name": "environment"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          736,
+          336
+        ],
+        "id": "29819ba6-b110-4311-bd93-8f51964890be",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          736,
+          -224
+        ],
+        "id": "9a61b32e-7d38-4630-88f3-152f42d28ab8",
+        "name": "When chat message received",
+        "webhookId": "1a9b8b67-7289-4275-93fa-9547616ec1aa",
+        "alwaysOutputData": false
+      }
+    ],
+    "connections": {
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Jira Bug Clarity Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "JIRA API Agent": {
+        "ai_tool": [
+          [
+            {
+              "node": "Jira Bug Clarity Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Jira Bug Clarity Agent": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "Jira Bug Clarity Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Jira Bug Clarity Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "Jira Bug Clarity Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Oswaldo Rodriguez",
+    "name": "Version 8928a6c7",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
