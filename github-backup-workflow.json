@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-05T14:04:41.326Z",
+  "updatedAt": "2026-05-05T14:05:50.030Z",
   "createdAt": "2026-04-30T19:31:09.695Z",
   "id": "D8VPIkfYeVIwDQB5",
   "name": "GitHub Backup Workflow",
@@ -16,7 +16,7 @@
       "type": "n8n-nodes-base.code",
       "position": [
         -2288,
-        800
+        752
       ],
       "typeVersion": 2
     },
@@ -43,7 +43,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         -2960,
-        800
+        752
       ],
       "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
       "typeVersion": 1,
@@ -71,7 +71,7 @@
       "type": "n8n-nodes-base.aggregate",
       "position": [
         -2736,
-        800
+        752
       ],
       "typeVersion": 1
     },
@@ -91,7 +91,7 @@
       "type": "n8n-nodes-base.if",
       "position": [
         -1840,
-        800
+        848
       ],
       "typeVersion": 1
     },
@@ -119,7 +119,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         -1616,
-        896
+        944
       ],
       "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
       "typeVersion": 1,
@@ -155,7 +155,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         -1616,
-        704
+        752
       ],
       "typeVersion": 1,
       "webhookId": "a824606d-bf7f-41f8-85cf-48af8081a988",
@@ -183,7 +183,7 @@
       "type": "n8n-nodes-base.if",
       "position": [
         -1168,
-        704
+        752
       ],
       "typeVersion": 1
     },
@@ -211,8 +211,8 @@
       "name": "Update file",
       "type": "n8n-nodes-base.github",
       "position": [
-        -960,
-        704
+        -944,
+        752
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
       "typeVersion": 1,
@@ -238,7 +238,7 @@
       "typeVersion": 1.3,
       "position": [
         -3184,
-        800
+        752
       ],
       "id": "ebbd962f-ea3f-4e1b-b914-61d8164d89c1",
       "name": "Schedule Trigger"
@@ -268,7 +268,7 @@
       "type": "n8n-nodes-base.set",
       "position": [
         -2064,
-        800
+        752
       ],
       "typeVersion": 3.4
     },
@@ -281,7 +281,7 @@
       "typeVersion": 2,
       "position": [
         -1392,
-        704
+        752
       ],
       "id": "64e8709a-f8ae-4789-ad31-388a7a9e93b7",
       "name": "Retrieve VersionIds"
@@ -293,7 +293,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1840,
+        -1616,
         560
       ],
       "id": "e99c03ae-37b5-49cc-b1f3-e415b1b61378",
@@ -308,7 +308,7 @@
       "name": "Retrieve all workflows",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        -2064,
+        -1840,
         560
       ],
       "typeVersion": 1,
@@ -342,7 +342,7 @@
       "name": "Delete file from repo",
       "type": "n8n-nodes-base.github",
       "position": [
-        -1616,
+        -1392,
         560
       ],
       "typeVersion": 1,
@@ -366,7 +366,7 @@
       "type": "n8n-nodes-base.n8n",
       "position": [
         -2512,
-        800
+        752
       ],
       "typeVersion": 1,
       "credentials": {
@@ -538,8 +538,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "c4c17f56-83fd-4622-8b29-f4b93f59b634",
-  "activeVersionId": "f7906d7b-e552-420f-91a7-209f9b6b75d9",
+  "versionId": "b86d4c09-3b09-47b8-95dd-61b50425e7ad",
+  "activeVersionId": "b86d4c09-3b09-47b8-95dd-61b50425e7ad",
   "triggerCount": 1,
   "shared": [
     {
@@ -551,9 +551,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-05T13:59:35.000Z",
-    "createdAt": "2026-05-05T13:59:04.591Z",
-    "versionId": "f7906d7b-e552-420f-91a7-209f9b6b75d9",
+    "updatedAt": "2026-05-05T14:05:52.000Z",
+    "createdAt": "2026-05-05T14:05:50.031Z",
+    "versionId": "b86d4c09-3b09-47b8-95dd-61b50425e7ad",
     "workflowId": "D8VPIkfYeVIwDQB5",
     "nodes": [
       {
@@ -561,12 +561,12 @@
           "mode": "runOnceForEachItem",
           "jsCode": "const workflow = $input.item.json;\nconst jsonString = JSON.stringify(workflow, null, 2);\nconst base64 = Buffer.from(jsonString).toString('base64');\n\nreturn {\n  ...workflow,\n  data: base64\n};"
         },
-        "id": "e7039095-5925-4a85-b8e2-afdaf894e4e8",
+        "id": "b6a2c170-57ac-4adc-80b6-f66f0c0760df",
         "name": "Convert to base64",
         "type": "n8n-nodes-base.code",
         "position": [
-          -848,
-          720
+          -2288,
+          752
         ],
         "typeVersion": 2
       },
@@ -588,12 +588,12 @@
           },
           "filePath": "="
         },
-        "id": "61b99f4d-5c91-4a36-bd08-01d5fefa6ac6",
+        "id": "9b705f2b-fa63-4aae-84f1-b3582d5d40a1",
         "name": "List files from repo",
         "type": "n8n-nodes-base.github",
         "position": [
-          -1520,
-          720
+          -2960,
+          752
         ],
         "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
         "typeVersion": 1,
@@ -616,36 +616,14 @@
           },
           "options": {}
         },
-        "id": "9a78f976-e7b7-46a4-b3a6-bff087b0583f",
+        "id": "39562d6f-743d-40be-a319-6724d054b960",
         "name": "Aggregate",
         "type": "n8n-nodes-base.aggregate",
         "position": [
-          -1296,
-          720
+          -2736,
+          752
         ],
         "typeVersion": 1
-      },
-      {
-        "parameters": {
-          "filters": {
-            "activeWorkflows": true
-          },
-          "requestOptions": {}
-        },
-        "id": "d1c09fc3-480e-4b7a-a15f-8c81fc26b3d0",
-        "name": "Retrieve workflows",
-        "type": "n8n-nodes-base.n8n",
-        "position": [
-          -1072,
-          720
-        ],
-        "typeVersion": 1,
-        "credentials": {
-          "n8nApi": {
-            "id": "aC9X6ZkK0JdCzFeK",
-            "name": "n8n account"
-          }
-        }
       },
       {
         "parameters": {
@@ -658,12 +636,12 @@
             ]
           }
         },
-        "id": "b388c8cf-ea86-4a46-8ad8-1c562321437e",
+        "id": "6da2f13f-8763-47b3-8c2a-5b6d1b9c0b3d",
         "name": "Check if file exists",
         "type": "n8n-nodes-base.if",
         "position": [
-          -400,
-          816
+          -1840,
+          848
         ],
         "typeVersion": 1
       },
@@ -686,12 +664,12 @@
           "fileContent": "={{ $('Convert to base64').item.json.data }}",
           "commitMessage": "={{ $('Commit info').item.json.commitMessage }}"
         },
-        "id": "105ad76f-1fe5-4d09-b313-98b868bc852e",
+        "id": "0415aac9-90e5-448d-8bf3-2fa04ba568ab",
         "name": "Upload file",
         "type": "n8n-nodes-base.github",
         "position": [
-          -176,
-          912
+          -1616,
+          944
         ],
         "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
         "typeVersion": 1,
@@ -722,12 +700,12 @@
           "asBinaryProperty": false,
           "additionalParameters": {}
         },
-        "id": "81dcd730-f696-4fb6-bef7-2b7c75c58f11",
+        "id": "a17047fc-c08e-44d7-9514-f83afb57987e",
         "name": "Get current file",
         "type": "n8n-nodes-base.github",
         "position": [
-          -176,
-          720
+          -1616,
+          752
         ],
         "typeVersion": 1,
         "webhookId": "a824606d-bf7f-41f8-85cf-48af8081a988",
@@ -750,12 +728,12 @@
             ]
           }
         },
-        "id": "4e02931f-83d6-4d05-bb82-8fb958e9f5b8",
+        "id": "71eb461f-7eb9-4c78-8881-d87bad7588b8",
         "name": "Has changed?",
         "type": "n8n-nodes-base.if",
         "position": [
-          272,
-          720
+          -1168,
+          752
         ],
         "typeVersion": 1
       },
@@ -779,12 +757,12 @@
           "fileContent": "={{ $('Convert to base64').item.json.data }}",
           "commitMessage": "={{ $('Commit info').item.json.commitMessage }}"
         },
-        "id": "8662c3d0-53cb-41b0-8985-18cf6048c4a5",
+        "id": "91ba25af-3149-4fe3-a4f8-d9442be7e6f5",
         "name": "Update file",
         "type": "n8n-nodes-base.github",
         "position": [
-          496,
-          720
+          -944,
+          752
         ],
         "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
         "typeVersion": 1,
@@ -809,10 +787,10 @@
         "type": "n8n-nodes-base.scheduleTrigger",
         "typeVersion": 1.3,
         "position": [
-          -1744,
-          720
+          -3184,
+          752
         ],
-        "id": "df6caa0a-b058-4400-84b5-c85cfeb2588c",
+        "id": "ebbd962f-ea3f-4e1b-b914-61d8164d89c1",
         "name": "Schedule Trigger"
       },
       {
@@ -823,53 +801,73 @@
                 "id": "b0fe1bcc-e79c-4a6b-b8b4-44222c8bf4e8",
                 "name": "fileName",
                 "type": "string",
-                "value": "={{ $('Retrieve workflows').item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() }}.json"
+                "value": "={{ $('Retrieve active workflows').item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() }}.json"
               },
               {
                 "id": "9157636d-d77a-4af7-84ce-420d673b73b9",
                 "name": "commitMessage",
-                "value": "={{ $('Retrieve workflows').item.json.activeVersion?.name ?? 'no-version' }}",
+                "value": "={{ $('Retrieve active workflows').item.json.activeVersion?.name ?? 'no-version' }}",
                 "type": "string"
               }
             ]
           },
           "options": {}
         },
-        "id": "cd4071bf-84d9-4a60-988f-2301bf6d490e",
+        "id": "19366a20-6f0f-413b-aed6-9d8a8c2cb05f",
         "name": "Commit info",
         "type": "n8n-nodes-base.set",
         "position": [
-          -624,
-          720
+          -2064,
+          752
         ],
         "typeVersion": 3.4
       },
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve workflows').item.json.versionId,\n  ...$json\n};"
+          "jsCode": "const githubContent = Buffer.from(\n  $json.content.replace(/\\n/g, ''),\n  'base64'\n).toString('utf-8').trim();\n\nconst stored = JSON.parse(githubContent);\n\nreturn {\n  storedVersionId: stored.versionId,\n  currentVersionId: $('Retrieve active workflows').item.json.versionId,\n  ...$json\n};"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          48,
-          720
+          -1392,
+          752
         ],
-        "id": "77d9a423-7a97-403d-8719-ecfb7c9a3536",
+        "id": "64e8709a-f8ae-4789-ad31-388a7a9e93b7",
         "name": "Retrieve VersionIds"
       },
       {
         "parameters": {
-          "jsCode": "const allItems = $('Commit info').all();\nconst currentFileNames = allItems.map(item => item.json.fileName);\n\nconst repoFiles = $('Aggregate').first().json.name || [];\n\nconst filesToDelete = repoFiles.filter(name => \n  name.endsWith('.json') && \n  name !== 'README.md' && \n  !currentFileNames.includes(name)\n);\n\nreturn filesToDelete.map(name => ({ json: { fileName: name } }));"
+          "jsCode": "const allWorkflows = $('Retrieve all workflows').all();\nconst allFileNames = allWorkflows.map(item => \n  item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() + '.json'\n);\n\nconst repoFiles = $('Aggregate').first().json.name || [];\n\nconst filesToDelete = repoFiles.filter(name => \n  name.endsWith('.json') && \n  !allFileNames.includes(name)\n);\n\nreturn filesToDelete.map(name => ({ json: { fileName: name } }));"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -400,
-          528
+          -1616,
+          560
         ],
-        "id": "9b69db3f-1e23-4711-90e7-d0a5f0da1379",
+        "id": "e99c03ae-37b5-49cc-b1f3-e415b1b61378",
         "name": "Find deleted workflows"
+      },
+      {
+        "parameters": {
+          "filters": {},
+          "requestOptions": {}
+        },
+        "id": "1e7677b9-514f-46d6-9d36-5f4b75229799",
+        "name": "Retrieve all workflows",
+        "type": "n8n-nodes-base.n8n",
+        "position": [
+          -1840,
+          560
+        ],
+        "typeVersion": 1,
+        "credentials": {
+          "n8nApi": {
+            "id": "aC9X6ZkK0JdCzFeK",
+            "name": "n8n account"
+          }
+        }
       },
       {
         "parameters": {
@@ -890,19 +888,41 @@
           "filePath": "={{ $json.fileName }}",
           "commitMessage": "=deleted-{{ $json.fileName }}"
         },
-        "id": "3f7e2044-6e03-48c2-b12a-541f93397086",
+        "id": "9830c607-bd67-446b-8174-5e00d2be4b92",
         "name": "Delete file from repo",
         "type": "n8n-nodes-base.github",
         "position": [
-          -176,
-          528
+          -1392,
+          560
         ],
         "typeVersion": 1,
-        "webhookId": "c54186c3-9414-4bdd-8dc4-522132616514",
+        "webhookId": "1d666801-b5e1-4b8a-859b-0e6ab8747a07",
         "credentials": {
           "githubApi": {
             "id": "XROMFPzqFUz4J0e9",
             "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "filters": {
+            "activeWorkflows": true
+          },
+          "requestOptions": {}
+        },
+        "id": "0d4def96-78b6-4b0c-84b9-854276a334be",
+        "name": "Retrieve active workflows",
+        "type": "n8n-nodes-base.n8n",
+        "position": [
+          -2512,
+          752
+        ],
+        "typeVersion": 1,
+        "credentials": {
+          "n8nApi": {
+            "id": "aC9X6ZkK0JdCzFeK",
+            "name": "n8n account"
           }
         }
       }
@@ -934,18 +954,7 @@
         "main": [
           [
             {
-              "node": "Retrieve workflows",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Retrieve workflows": {
-        "main": [
-          [
-            {
-              "node": "Convert to base64",
+              "node": "Retrieve active workflows",
               "type": "main",
               "index": 0
             }
@@ -1012,6 +1021,17 @@
               "index": 0
             },
             {
+              "node": "Retrieve all workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Retrieve all workflows": {
+        "main": [
+          [
+            {
               "node": "Find deleted workflows",
               "type": "main",
               "index": 0
@@ -1040,12 +1060,23 @@
             }
           ]
         ]
+      },
+      "Retrieve active workflows": {
+        "main": [
+          [
+            {
+              "node": "Convert to base64",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Oswaldo Rodriguez",
-    "name": "Version f7906d7b",
+    "name": "Version b86d4c09",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
