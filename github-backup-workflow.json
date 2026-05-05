@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-05T14:05:50.030Z",
+  "updatedAt": "2026-05-05T14:09:43.474Z",
   "createdAt": "2026-04-30T19:31:09.695Z",
   "id": "D8VPIkfYeVIwDQB5",
   "name": "GitHub Backup Workflow",
@@ -288,7 +288,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const allWorkflows = $('Retrieve all workflows').all();\nconst allFileNames = allWorkflows.map(item => \n  item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() + '.json'\n);\n\nconst repoFiles = $('Aggregate').first().json.name || [];\n\nconst filesToDelete = repoFiles.filter(name => \n  name.endsWith('.json') && \n  !allFileNames.includes(name)\n);\n\nreturn filesToDelete.map(name => ({ json: { fileName: name } }));"
+        "jsCode": "const allWorkflows = $('Retrieve all workflows').all();\nconst allFileNames = allWorkflows\n  .filter(item => !item.json.isArchived)\n  .map(item => \n    item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() + '.json'\n  );\n\nconst repoFiles = $('Aggregate').first().json.name || [];\n\nconst filesToDelete = repoFiles.filter(name => \n  name.endsWith('.json') && \n  !allFileNames.includes(name)\n);\n\nreturn filesToDelete.map(name => ({ json: { fileName: name } }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -538,8 +538,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "b86d4c09-3b09-47b8-95dd-61b50425e7ad",
-  "activeVersionId": "b86d4c09-3b09-47b8-95dd-61b50425e7ad",
+  "versionId": "4fbd9b0e-671d-4c1d-a00e-0a782fcf738d",
+  "activeVersionId": "4fbd9b0e-671d-4c1d-a00e-0a782fcf738d",
   "triggerCount": 1,
   "shared": [
     {
@@ -551,9 +551,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-05T14:05:52.000Z",
-    "createdAt": "2026-05-05T14:05:50.031Z",
-    "versionId": "b86d4c09-3b09-47b8-95dd-61b50425e7ad",
+    "updatedAt": "2026-05-05T14:09:50.000Z",
+    "createdAt": "2026-05-05T14:09:43.475Z",
+    "versionId": "4fbd9b0e-671d-4c1d-a00e-0a782fcf738d",
     "workflowId": "D8VPIkfYeVIwDQB5",
     "nodes": [
       {
@@ -838,7 +838,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const allWorkflows = $('Retrieve all workflows').all();\nconst allFileNames = allWorkflows.map(item => \n  item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() + '.json'\n);\n\nconst repoFiles = $('Aggregate').first().json.name || [];\n\nconst filesToDelete = repoFiles.filter(name => \n  name.endsWith('.json') && \n  !allFileNames.includes(name)\n);\n\nreturn filesToDelete.map(name => ({ json: { fileName: name } }));"
+          "jsCode": "const allWorkflows = $('Retrieve all workflows').all();\nconst allFileNames = allWorkflows\n  .filter(item => !item.json.isArchived)\n  .map(item => \n    item.json.name.replace(/[^\\x00-\\x7F]/g, '').trim().replace(/\\s+/g, '-').toLowerCase() + '.json'\n  );\n\nconst repoFiles = $('Aggregate').first().json.name || [];\n\nconst filesToDelete = repoFiles.filter(name => \n  name.endsWith('.json') && \n  !allFileNames.includes(name)\n);\n\nreturn filesToDelete.map(name => ({ json: { fileName: name } }));"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -1074,7 +1074,7 @@
       }
     },
     "authors": "Oswaldo Rodriguez",
-    "name": "Version b86d4c09",
+    "name": "Version 4fbd9b0e",
     "description": "",
     "autosaved": true
   },
